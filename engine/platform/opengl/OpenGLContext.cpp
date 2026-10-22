@@ -12,7 +12,7 @@ namespace forge
 {
     OpenGLContext::OpenGLContext(GLFWwindow* window) : window_(window) { }
 
-    void OpenGLContext::initialise()
+    void OpenGLContext::initialise() const
     {
         glfwMakeContextCurrent(window_);
 

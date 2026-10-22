@@ -21,8 +21,8 @@ add_library(
     # --------------------------------------------------------
 
     platform/opengl/Renderer2D.cpp
+    platform/opengl/Shader.cpp
     platform/opengl/OpenGLContext.cpp
-    # platform/opengl/GLShader.cpp
     # platform/opengl/GLTexture.cpp
 )
 

@@ -9,7 +9,7 @@ namespace forge
         public:
             explicit OpenGLContext(GLFWwindow* window);
 
-            void initialise();
+            void initialise()  const;
             void swapBuffers() const;
 
         private:
