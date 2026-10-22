@@ -1,2 +1,23 @@
+# CMake
+build/
+build-*/
+cmake-build-*/
+
+# Compiled objects/libraries
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+# Executables
+*.exe
+
+# IDE
 .idea/
-cmake-build-debug/
+
+# OS
+.DS_Store
+Thumbs.db
