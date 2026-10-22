@@ -1,60 +1,91 @@
-cmake_minimum_required(VERSION 4.3)
-project(cpprust_forge2d VERSION 1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.25)
+project(
+    cpprust_forge2d
+    VERSION 0.1.0
+    DESCRIPTION "A lightweight 2D game engine"
+    LANGUAGES C CXX
+)
 
-set(CMAKE_CXX_STANDARD 26)
-set(CMAKE_CXX_STANDARD_REQUIRED ON) # Force C++ 17 or higher
+# ------------------------------------------------------------
+# GLOBAL PROJECT CONFIGURATION
+# ------------------------------------------------------------
+
+# Useful for IDEs, clangd, etc.
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Use an installed GLFW if one is found, otherwise download and
-# build it automatically
-find_package(glfw3 3.4 QUIET)
+# Don't silently fall back to compiler-specific GNU extensions.
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-if (NOT glfw3_FOUND)
-    include(FetchContent)
+# Put executables in one predictable location.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    "${CMAKE_BINARY_DIR}/bin"
+)
 
-    set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
-    set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
-    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-    set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
+# Static libraries, such as libforge2d.a.
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    "${CMAKE_BINARY_DIR}/lib"
+)
 
-    FetchContent_Declare(
-            glfw
-            GIT_REPOSITORY https://github.com/glfw/glfw.git
-            GIT_TAG        3.4
-            GIT_SHALLOW    TRUE
-    )
-    FetchContent_MakeAvailable(glfw)
+# Shared libraries, when you eventually have any.
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+   "${CMAKE_BINARY_DIR}/lib"
+)
+
+# ------------------------------------------------------------
+# OPTIONS
+# ------------------------------------------------------------
+
+option(
+    FORGE2D_BUILD_PLATFORMER
+    "Build the platformer"
+    ON
+)
+
+option(
+    FORGE2D_BUILD_EXAMPLES
+    "Build Forge2D examples"
+    ON
+)
+
+option(
+    FORGE2D_BUILD_TESTS
+    "Build Forge2D tests"
+    OFF
+)
+
+# ------------------------------------------------------------
+# DEPENDENCIES
+# ------------------------------------------------------------
+
+include(cmake/Dependencies.cmake)
+
+# ------------------------------------------------------------
+# ENGINE
+# ------------------------------------------------------------
+
+add_subdirectory(engine)
+
+# ------------------------------------------------------------
+# GAMES
+# ------------------------------------------------------------
+
+if(FORGE2D_BUILD_PLATFORMER)
+    add_subdirectory(games/platformer)
 endif()
 
-find_package(OpenGL REQUIRED)
+# ------------------------------------------------------------
+# EXAMPLES
+# ------------------------------------------------------------
 
-add_executable(${PROJECT_NAME}
-    engine/forge2d/src/main.cpp
-)
+if(FORGE2D_BUILD_EXAMPLES)
+    add_subdirectory(examples/sandbox)
+endif()
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/engine/forge2d/include"
-)
+# ------------------------------------------------------------
+# TESTS
+# ------------------------------------------------------------
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw       # Target name from find_package(glfw3)
-    OpenGL::GL # Standard modern OpenGL target
-)
-
-if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        /W4
-        /permissive-
-        /utf-8
-    )
-
-    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY
-        VS_STARTUP_PROJECT ${PROJECT_NAME}
-    )
-else()
-    target_compile_options(${PROJECT_NAME} PRIVATE
-        -Wall
-        -Wextra
-        -Wpedantic
-    )
+if(FORGE2D_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
