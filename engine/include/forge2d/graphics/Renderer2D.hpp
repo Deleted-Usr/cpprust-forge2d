@@ -11,5 +11,7 @@ namespace forge
 
             void beginFrame(const Colour& clearColour);
             void endFrame();
+
+            void drawTriangle();
     };
 }
