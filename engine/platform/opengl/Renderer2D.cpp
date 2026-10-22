@@ -44,7 +44,7 @@ namespace forge
             "out vec4 FragColor;\n"
             "void main()\n"
             "{\n"
-            "   FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);\n"
+            "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
             "}\0";
 
         unsigned int vertexShader;
@@ -63,6 +63,22 @@ namespace forge
         glAttachShader(shaderProgram, vertexShader);
         glAttachShader(shaderProgram, fragmentShader);
         glLinkProgram(shaderProgram);
+
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+
+        unsigned int VAO;
+        glGenVertexArrays(1, &VAO);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
     void Renderer2D::endFrame()
