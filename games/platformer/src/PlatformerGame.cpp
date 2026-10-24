@@ -26,6 +26,7 @@ void PlatformerGame::render(forge::Renderer2D& renderer)
     std::cout << "platformer draw" << std::endl;
 
     renderer.drawTriangle();
+    //renderer.drawQuad();
 
     // Eventually:
     //

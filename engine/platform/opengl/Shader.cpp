@@ -24,7 +24,7 @@ namespace forge
         return stream.str();
     }
 
-    unsigned int Shader::compile(unsigned int type,const std::string& source,const std::filesystem::path& path)
+    unsigned int Shader::compile(unsigned int type, const std::string& source, const std::filesystem::path& path)
     {
         const unsigned int shader = glCreateShader(type);
         const char* sourcePointer = source.c_str();

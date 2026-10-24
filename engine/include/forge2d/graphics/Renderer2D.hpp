@@ -23,11 +23,19 @@ namespace forge
             void endFrame();
 
             void drawTriangle();
+            void drawQuad();
 
         private:
-            std::unique_ptr<Shader> triangleShader_;
+            std::unique_ptr<Shader> shapeShader_;
 
-            unsigned int triangleVao_ = 0;
-            unsigned int triangleVbo_ = 0;
+            unsigned int triangleVAO_ = 0;
+            unsigned int triangleVBO_ = 0;
+
+            unsigned int quadVAO_ = 0;
+            unsigned int quadVBO_ = 0;
+            unsigned int quadEBO_ = 0;
+
+            void initTriangle();
+            void initQuad();
     };
 }
