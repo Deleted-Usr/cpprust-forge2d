@@ -21,8 +21,11 @@ void PlatformerGame::update(float deltaTime)
 
 void PlatformerGame::render(forge::Renderer2D& renderer)
 {
-    renderer.drawTriangle();
-    //renderer.drawQuad();
+    renderer.drawRect(
+        { .x = 0.f, .y = .5f },
+        { .x = 0.3f, .y = 0.2f },
+        { .r = 0.0f, .g = 1.0f, .b = 0.0f }
+    );
 
     // Eventually:
     //

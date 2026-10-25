@@ -1,13 +1,11 @@
 #include <forge2d/graphics/Renderer2D.hpp>
-
 #include "Shader.hpp"
 
 #include <glad/gl.h>
 
-namespace
-{
-
-}
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace forge
 {
@@ -21,7 +19,7 @@ namespace forge
         initTriangle();
         initQuad();
 
-        //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     void Renderer2D::initTriangle()
@@ -157,17 +155,19 @@ namespace forge
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void Renderer2D::drawTriangle()
+    void Renderer2D::drawTriangle(Vec2 a, Vec2 b, Vec2 c, const Colour colour)
     {
         shapeShader_->bind();
+        shapeShader_->setColour("uColour", colour);
 
         glBindVertexArray(triangleVAO_);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    void Renderer2D::drawQuad()
+    void Renderer2D::drawRect(Vec2 position, Vec2 size, const Colour colour)
     {
         shapeShader_->bind();
+        shapeShader_->setColour("uColour", colour);
 
         glBindVertexArray(quadVAO_);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

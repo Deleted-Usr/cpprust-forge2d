@@ -58,10 +58,7 @@ namespace forge
         return shader;
     }
 
-    Shader::Shader(
-        const std::filesystem::path& vertexPath,
-        const std::filesystem::path& fragmentPath
-    )
+    Shader::Shader(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath)
     {
         const std::string vertexSource   = readFile(vertexPath);
         const std::string fragmentSource = readFile(fragmentPath);
@@ -134,13 +131,26 @@ namespace forge
 
     void Shader::bind() const
     {
-        double timeValue = glfwGetTime();
-        double greenValue = (sin(timeValue) / 2.0f) + 0.5f;
-
-        int vertexColourLocation = glGetUniformLocation(program_, "customColour");
-
         glUseProgram(program_);
+    }
 
-        glUniform4f(vertexColourLocation, 0.0f, static_cast<float>(greenValue), 0.0f, 1.0f);
+    void Shader::setBool(const std::string &name, const bool value) const
+    {
+        glUniform1i(glGetUniformLocation(program_, name.c_str()), static_cast<int>(value));
+    }
+
+    void Shader::setInt(const std::string &name, const int value) const
+    {
+        glUniform1i(glGetUniformLocation(program_, name.c_str()), value);
+    }
+
+    void Shader::setFloat(const std::string &name, const float value) const
+    {
+        glUniform1f(glGetUniformLocation(program_, name.c_str()), value);
+    }
+
+    void Shader::setColour(const std::string &name, const Colour& value) const
+    {
+        glUniform4f(glGetUniformLocation(program_, name.c_str()), value.r, value.g, value.b, value.a);
     }
 }

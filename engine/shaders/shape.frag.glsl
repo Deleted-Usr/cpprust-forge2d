@@ -1,10 +1,9 @@
 #version 460 core
-out vec4 FragColor;
 
-in vec4 vertexColour;
-uniform vec4 customColour;
+out vec4 FragColor;
+uniform vec4 uColour;
 
 void main()
 {
-    FragColor = customColour;
+    FragColor = uColour;
 }

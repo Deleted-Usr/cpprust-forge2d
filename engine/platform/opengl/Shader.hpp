@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <string>
 
+#include <forge2d/graphics/Colour.hpp>
+
 namespace forge
 {
     class Shader
@@ -19,6 +21,12 @@ namespace forge
             Shader& operator=(const Shader&) = delete;
 
             void bind() const;
+
+            void setBool(const std::string& name, bool value) const;
+            void setInt(const std::string& name, int value) const;
+            void setFloat(const std::string& name, float value) const;
+
+            void setColour(const std::string& name, const Colour& value) const;
 
         private:
             unsigned int program_ = 0;
