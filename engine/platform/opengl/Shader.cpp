@@ -1,7 +1,9 @@
 #include "Shader.hpp"
 
 #include <glad/gl.h>
+#include "GLFW/glfw3.h"
 
+#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -132,6 +134,13 @@ namespace forge
 
     void Shader::bind() const
     {
+        double timeValue = glfwGetTime();
+        double greenValue = (sin(timeValue) / 2.0f) + 0.5f;
+
+        int vertexColourLocation = glGetUniformLocation(program_, "customColour");
+
         glUseProgram(program_);
+
+        glUniform4f(vertexColourLocation, 0.0f, static_cast<float>(greenValue), 0.0f, 1.0f);
     }
 }

@@ -11,8 +11,6 @@ void PlatformerGame::onStart()
 
 void PlatformerGame::update(float deltaTime)
 {
-    std::cout << "platformer tick" << std::endl;
-
     // Eventually:
     //
     // if (Input::isKeyDown(Key::D))
@@ -23,8 +21,6 @@ void PlatformerGame::update(float deltaTime)
 
 void PlatformerGame::render(forge::Renderer2D& renderer)
 {
-    std::cout << "platformer draw" << std::endl;
-
     renderer.drawTriangle();
     //renderer.drawQuad();
 
