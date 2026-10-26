@@ -9,8 +9,13 @@ void PlatformerGame::onStart()
     std::cout << "Platformer Started!" << std::endl;
 }
 
+float x = 0;
+float y = 0;
+
 void PlatformerGame::update(float deltaTime)
 {
+    x += 0.001;
+
     // Eventually:
     //
     // if (Input::isKeyDown(Key::D))
@@ -22,7 +27,7 @@ void PlatformerGame::update(float deltaTime)
 void PlatformerGame::render(forge::Renderer2D& renderer)
 {
     renderer.drawRect(
-        { .x = 0.f, .y = .5f },
+        { .x = x, .y = y },
         { .x = 0.3f, .y = 0.2f },
         { .r = 0.0f, .g = 1.0f, .b = 0.0f }
     );

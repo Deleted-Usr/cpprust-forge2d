@@ -19,7 +19,7 @@ namespace forge
         initTriangle();
         initQuad();
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     }
 
     void Renderer2D::initTriangle()
@@ -168,6 +168,8 @@ namespace forge
     {
         shapeShader_->bind();
         shapeShader_->setColour("uColour", colour);
+
+        shapeShader_->setPosition("uModel", position);
 
         glBindVertexArray(quadVAO_);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

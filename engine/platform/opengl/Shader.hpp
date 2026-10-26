@@ -4,6 +4,7 @@
 #include <string>
 
 #include <forge2d/graphics/Colour.hpp>
+#include <forge2d/math/vec2.hpp>
 
 namespace forge
 {
@@ -27,6 +28,8 @@ namespace forge
             void setFloat(const std::string& name, float value) const;
 
             void setColour(const std::string& name, const Colour& value) const;
+
+            void setPosition(const std::string& name, const Vec2& value) const;
 
         private:
             unsigned int program_ = 0;
