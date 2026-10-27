@@ -15,6 +15,8 @@ add_library(
 
     src/math/Mat4.cpp
     src/math/Transform2D.cpp
+    src/time/Time.cpp
+    src/time/Clock.cpp
 
     # --------------------------------------------------------
     # GLFW platform
