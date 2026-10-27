@@ -4,7 +4,9 @@
 #include <string>
 
 #include <forge2d/graphics/Colour.hpp>
-#include <forge2d/math/vec2.hpp>
+
+#include <forge2d/math/Vec2.hpp>
+#include "forge2d/math/Mat4.hpp"
 
 namespace forge
 {
@@ -23,13 +25,11 @@ namespace forge
 
             void bind() const;
 
-            void setBool(const std::string& name, bool value) const;
-            void setInt(const std::string& name, int value) const;
-            void setFloat(const std::string& name, float value) const;
-
-            void setColour(const std::string& name, const Colour& value) const;
-
-            void setPosition(const std::string& name, const Vec2& value) const;
+            void setBool(const std::string_view& name, bool value) const;
+            void setInt(const std::string_view& name, int value) const;
+            void setFloat(const std::string_view& name, float value) const;
+            void setVec4(const std::string_view& name, const math::Vec4& value) const;
+            void setMat4(const std::string_view& name, const math::Mat4& value) const;
 
         private:
             unsigned int program_ = 0;

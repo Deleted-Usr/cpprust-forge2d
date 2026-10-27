@@ -4,7 +4,10 @@
 #include <memory>
 
 #include <forge2d/graphics/Colour.hpp>
-#include "forge2d/math/vec2.hpp"
+
+#include <forge2d/math/Vec2.hpp>
+#include <forge2d/math/Transform2D.hpp>
+
 
 namespace forge
 {
@@ -23,8 +26,10 @@ namespace forge
             void beginFrame(const Colour& clearColour);
             void endFrame();
 
-            void drawTriangle(Vec2 a, Vec2 b, Vec2 c, Colour colour);
-            void drawRect(Vec2 position, Vec2 size, Colour colour);
+            void drawTriangle(math::Vec2 a, math::Vec2 b, math::Vec2 c, Colour colour);
+            void drawRect(math::Transform2D transform, Colour colour);
+            void drawLine(math::Vec2 from, math::Vec2 to, Colour colour);
+            void drawCircle(math::Vec2 centre, float radius, Colour colour);
 
         private:
             std::unique_ptr<Shader> shapeShader_;

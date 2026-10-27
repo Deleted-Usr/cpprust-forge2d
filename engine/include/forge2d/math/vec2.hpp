@@ -1,67 +1,95 @@
 #pragma once
+
 #include <cmath>
 
-struct Vec2
+namespace forge::math
 {
-    float x{};
-    float y{};
-
-    Vec2 operator=(const Vec2& other) const
+    struct Vec2
     {
-        return {
-            .x = other.x,
-            .y = other.y
-        };
-    }
+        float x = 0.0f;
+        float y = 0.0f;
 
-    Vec2 operator+(const Vec2& other) const
-    {
-        return {
-            .x = x + other.x,
-            .y = y + other.y
-        };
-    }
+        constexpr Vec2() = default;
+        constexpr Vec2(float x, float y) : x(x), y(y) {}
 
-    Vec2 operator*(const Vec2& other) const
-    {
-        return {
-            .x = x * other.x,
-            .y = y * other.y
-        };
-    }
-
-    [[nodiscard]] float length() const
-    {
-        return std::sqrt(x * x + y * y);
-    }
-
-    /// Returns a unit-length copy, or a new zero vector when this vector has no length
-    [[nodiscard]] Vec2 normalise() const
-    {
-        if (length() == 0)
+        [[nodiscard]]
+        constexpr Vec2 operator+(const Vec2& other) const
         {
             return {
-                .x = 0,
-                .y = 0
+                x + other.x,
+                y + other.y
             };
         }
 
-        return {
-            .x = x / length(),
-            .y = y / length()
-        };
-    }
+        [[nodiscard]]
+        constexpr Vec2 operator-(const Vec2& other) const
+        {
+            return {
+                x - other.x,
+                y - other.y
+            };
+        }
 
-    /// Dot product
-    [[nodiscard]] float dot(const Vec2& other) const
-    {
-        return x * other.x + y * other.y;
-    }
+        [[nodiscard]]
+        constexpr Vec2 operator*(float scalar) const
+        {
+            return {
+                x * scalar,
+                y * scalar
+            };
+        }
 
-    /// 2D cross product (returns scalar, the z-component)
-    /// @return the scalar (the z-component)
-    [[nodiscard]] float cross(const Vec2& other) const
-    {
-        return x * other.y - y * other.x;
-    }
-};
+        [[nodiscard]]
+        constexpr Vec2 operator/(float scalar) const
+        {
+            return {
+                x / scalar,
+                y / scalar
+            };
+        }
+
+        constexpr Vec2& operator+=(const Vec2& other)
+        {
+            x += other.x;
+            y += other.y;
+
+            return *this;
+        }
+
+        constexpr Vec2& operator-=(const Vec2& other)
+        {
+            x -= other.x;
+            y -= other.y;
+
+            return *this;
+        }
+
+        [[nodiscard]]
+        float length() const
+        {
+            return std::sqrt(x * x + y * y);
+        }
+
+        [[nodiscard]]
+        Vec2 normalized() const
+        {
+            const float len = length();
+
+            if (len == 0.0f)
+            {
+                return {};
+            }
+
+            return {
+                x / len,
+                y / len
+            };
+        }
+
+        [[nodiscard]]
+        constexpr float dot(const Vec2& other) const
+        {
+            return x * other.x + y * other.y;
+        }
+    };
+}

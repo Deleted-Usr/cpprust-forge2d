@@ -1,7 +1,7 @@
 #pragma once
 
 #include <forge2d/core/Game.hpp>
-#include <forge2d/math/vec2.hpp>
+#include <forge2d/math/Vec2.hpp>
 
 class PlatformerGame final : public forge::Game
 {
@@ -13,5 +13,5 @@ class PlatformerGame final : public forge::Game
         void render(forge::Renderer2D& renderer) override;
 
     private:
-        Vec2 position_ = {.x = 100.f, .y = 100.f};
+        forge::math::Vec2 position_ = { 100.f, 100.f };
 };

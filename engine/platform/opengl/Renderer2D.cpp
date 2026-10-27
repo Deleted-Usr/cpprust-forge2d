@@ -3,9 +3,6 @@
 
 #include <glad/gl.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 namespace forge
 {
@@ -155,28 +152,39 @@ namespace forge
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-    void Renderer2D::drawTriangle(Vec2 a, Vec2 b, Vec2 c, const Colour colour)
+    void Renderer2D::endFrame()
+    {
+        // Nothing yet.
+    }
+
+    void Renderer2D::drawTriangle(math::Vec2 a, math::Vec2 b, math::Vec2 c, const Colour colour)
     {
         shapeShader_->bind();
-        shapeShader_->setColour("uColour", colour);
+
+        shapeShader_->setVec4("uColour", colour.toVec4());
 
         glBindVertexArray(triangleVAO_);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    void Renderer2D::drawRect(Vec2 position, Vec2 size, const Colour colour)
+    void Renderer2D::drawRect(math::Transform2D transform, const Colour colour)
     {
         shapeShader_->bind();
-        shapeShader_->setColour("uColour", colour);
 
-        shapeShader_->setPosition("uModel", position);
+        shapeShader_->setVec4("uColour", colour.toVec4());
+        shapeShader_->setMat4("uModel", transform.matrix());
 
         glBindVertexArray(quadVAO_);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-    void Renderer2D::endFrame()
+    void Renderer2D::drawLine(math::Vec2 from, math::Vec2 to, const Colour colour)
     {
-        // Nothing yet.
+
+    }
+
+    void Renderer2D::drawCircle(math::Vec2 center, float radius, const Colour colour)
+    {
+
     }
 }

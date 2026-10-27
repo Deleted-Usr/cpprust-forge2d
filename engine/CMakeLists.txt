@@ -10,6 +10,13 @@ add_library(
     src/core/Window.cpp
 
     # --------------------------------------------------------
+    # Math
+    # --------------------------------------------------------
+
+    src/math/Mat4.cpp
+    src/math/Transform2D.cpp
+
+    # --------------------------------------------------------
     # GLFW platform
     # --------------------------------------------------------
 
@@ -23,7 +30,6 @@ add_library(
     platform/opengl/Renderer2D.cpp
     platform/opengl/Shader.cpp
     platform/opengl/OpenGLContext.cpp
-    # platform/opengl/GLTexture.cpp
 )
 
 # ============================================================
