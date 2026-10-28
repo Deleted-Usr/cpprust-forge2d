@@ -8,10 +8,6 @@
 #include <stdexcept>
 #include <vector>
 
-#include "glm/ext/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
-
-
 namespace forge
 {
     std::string Shader::readFile(const std::filesystem::path& path)

@@ -14,8 +14,6 @@ float y = 0;
 
 void PlatformerGame::update(float deltaTime)
 {
-    x += 0.001;
-
     // Eventually:
     //
     // if (Input::isKeyDown(Key::D))
@@ -32,7 +30,7 @@ void PlatformerGame::render(forge::Renderer2D& renderer)
             .rotation = 0.0f,
             .scale    = { 1.0f, 1.0f }
         },
-        { .r = 0.0f, .g = 1.0f, .b = 0.5f }
+        forge::colours::Cyan
     );
 
     // Eventually:

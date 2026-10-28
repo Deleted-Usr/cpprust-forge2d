@@ -19,19 +19,25 @@ add_library(
     src/time/Clock.cpp
 
     # --------------------------------------------------------
+    # Graphics
+    # --------------------------------------------------------
+
+    src/graphics/Renderer2D.cpp
+
+    # --------------------------------------------------------
     # GLFW platform
     # --------------------------------------------------------
 
-    # platform/glfw/GlfwWindow.cpp
-    # platform/glfw/GlfwInput.cpp
+
 
     # --------------------------------------------------------
     # OpenGL
     # --------------------------------------------------------
 
-    platform/opengl/Renderer2D.cpp
     platform/opengl/Shader.cpp
     platform/opengl/OpenGLContext.cpp
+    platform/opengl/buffer/Buffer.cpp
+    platform/opengl/array/VertexArray.cpp
 )
 
 # ============================================================
