@@ -9,9 +9,6 @@ void PlatformerGame::onStart()
     std::cout << "Platformer Started!" << std::endl;
 }
 
-float x = 0;
-float y = 0;
-
 void PlatformerGame::update(float deltaTime)
 {
     // Eventually:
@@ -24,15 +21,6 @@ void PlatformerGame::update(float deltaTime)
 
 void PlatformerGame::render(forge::Renderer2D& renderer)
 {
-    renderer.drawRect(
-        forge::math::Transform2D {
-            .position = { x, 0.0f },
-            .rotation = 0.0f,
-            .scale    = { 1.0f, 1.0f }
-        },
-        forge::colours::Cyan
-    );
-
     // Eventually:
     //
     // renderer.drawSprite(

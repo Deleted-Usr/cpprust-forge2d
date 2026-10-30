@@ -10,16 +10,18 @@ int main()
 {
     try
     {
-        forge::ApplicationConfig config;
+        const forge::ApplicationConfig config {
+            .window {
+                .title = "Forge2D Platformer",
 
-        config.window.title = "Forge2D Platformer";
+                .width = 800,
+                .height = 600,
 
-        config.window.width  = 800;
-        config.window.height = 600;
-        config.window.vsync  = true;
+                .vsync = true
+            }
+        };
 
         auto game = std::make_unique<PlatformerGame>();
-
         forge::Application app(config, std::move(game));
 
         return app.run();

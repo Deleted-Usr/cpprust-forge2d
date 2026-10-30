@@ -10,7 +10,7 @@ add_library(
     src/core/Window.cpp
 
     # --------------------------------------------------------
-    # Math
+    # Math / Time
     # --------------------------------------------------------
 
     src/math/Mat4.cpp
@@ -25,7 +25,7 @@ add_library(
     src/graphics/Renderer2D.cpp
 
     # --------------------------------------------------------
-    # GLFW platform
+    # GLFW
     # --------------------------------------------------------
 
 
@@ -38,6 +38,12 @@ add_library(
     platform/opengl/OpenGLContext.cpp
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
+
+    # --------------------------------------------------------
+    # Images
+    # --------------------------------------------------------
+
+    platform/stb/stb_image.cpp
 )
 
 # ============================================================

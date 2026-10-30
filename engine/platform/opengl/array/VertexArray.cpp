@@ -52,15 +52,15 @@ namespace forge::internal::opengl
 
         for (const auto& attr : attributes)
         {
-            glEnableVertexAttribArray(attr.index);
             glVertexAttribPointer(
                 attr.index,
                 attr.size,
                 attr.type,
                 attr.normalised,
                 attr.stride,
-                reinterpret_cast<const void*>(attr.offset)
+                reinterpret_cast<void*>(attr.offset)
             );
+            glEnableVertexAttribArray(attr.index);
         }
 
         glBindVertexArray(0);

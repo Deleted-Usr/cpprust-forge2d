@@ -23,10 +23,11 @@ namespace forge
             void beginFrame(const Colour& clearColour);
             void endFrame();
 
-            void drawTriangle(math::Vec2 a, math::Vec2 b, math::Vec2 c, Colour colour) const;
-            void drawRect(math::Transform2D transform, Colour colour) const;
-            void drawLine(math::Vec2 from, math::Vec2 to, Colour colour);
-            void drawCircle(math::Vec2 centre, float radius, Colour colour);
+            void drawTriangle (math::Transform2D transform, Colour colour)     const;
+            void drawRect     (math::Transform2D transform, Colour colour)     const;
+            void drawLine     (math::Vec2 from, math::Vec2 to,  Colour colour) const;
+            void drawCircle   (math::Vec2 centre, float radius, Colour colour) const;
+            void drawSprite   (math::Transform2D transform, Colour colour)     const;
 
         private:
             struct Impl;
@@ -34,5 +35,7 @@ namespace forge
 
             void initTriangle();
             void initQuad();
+
+            void loadTexture(unsigned int& tex, const std::string& path, int format);
     };
 }
