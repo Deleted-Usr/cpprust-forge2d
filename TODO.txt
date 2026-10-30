@@ -1,3 +1,7 @@
 // TODO -
 //  Full File IO System (could have an internal IO for shader files etc???)
 //  Prototype layer (structured like Java Swing g.drawRect(x, y, w, h) g.setColor(new Color(r, g, b, a))??????)
+//  Sprite/Shape Batching (to complete renderer)
+//  Kotlin Scripting Frontend
+//  Texture filtering options
+//  Should have a built-in asset manager, but include options for users to write their own or use other options
