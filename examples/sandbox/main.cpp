@@ -23,19 +23,19 @@ namespace
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
-                            .position = { x, 0.0f },
+                            .position = { 0.6f, 0.0f },
                             .rotation = 0.0f,
-                            .scale = { 1.0f, 1.0f }
+                            .scale = { 0.5f, 0.5f }
                         },
                         forge::colours::Cyan
                     );
                 }
 
-                if (bool drawTriangle = false)
+                if (bool drawTriangle = true)
                 {
                     renderer.drawTriangle(
                         forge::math::Transform2D {
-                            .position = { 0.0f, 0.0f },
+                            .position = { -0.4f, 0.0f },
                             .rotation = 0.0f,
                             .scale = { 1.0f, 1.0f }
                         },
@@ -53,6 +53,8 @@ int main()
         forge::ApplicationConfig config;
 
         config.window.title = "Forge2D Sandbox";
+        config.window.resizable = false;
+
         config.window.width = 800;
         config.window.height = 600;
 
