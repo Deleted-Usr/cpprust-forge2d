@@ -17,7 +17,8 @@ namespace forge
         int width  = 1280;
         int height = 720;
 
-        bool vsync = true;
+        bool resizable = true;
+        bool vsync     = true;
     };
 
     class Window

@@ -6,3 +6,4 @@
 //  Texture filtering options
 //  Should have a built-in asset manager, but include options for users to write their own or use other options
 //  Allow users to overlay basic colours over sprites???
+//  Add basic 3D functionality???

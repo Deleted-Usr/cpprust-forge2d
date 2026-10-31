@@ -14,7 +14,7 @@ namespace
 
             void update(float deltaTime) override
             {
-
+                x += deltaTime;
             }
 
             void render(forge::Renderer2D& renderer) override
@@ -23,23 +23,34 @@ namespace
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
-                            .position = { 0.6f, 0.0f },
+                            .position = { 2.0f, 1.0f },
                             .rotation = 0.0f,
-                            .scale = { 0.5f, 0.5f }
+                            .scale    = { 2.0f, 2.0f }
                         },
                         forge::colours::Cyan
                     );
                 }
 
-                if (bool drawTriangle = true)
+                if (bool drawTriangle = false)
                 {
                     renderer.drawTriangle(
                         forge::math::Transform2D {
-                            .position = { -0.4f, 0.0f },
+                            .position = { 170.4f, 0.0f },
                             .rotation = 0.0f,
-                            .scale = { 1.0f, 1.0f }
+                            .scale    = { 100.0f, 100.0f }
                         },
-                        forge::colours::Cyan
+                        forge::colours::Red
+                    );
+                }
+
+                if (bool drawSprite = true)
+                {
+                    renderer.drawSprite(
+                        forge::math::Transform2D {
+                            .position = { 100.f, 150.f },
+                            .rotation = 0.0f,
+                            .scale    = { 128.0f, 128.0f }
+                        }
                     );
                 }
             }

@@ -27,7 +27,7 @@ namespace forge
             void drawRect     (math::Transform2D transform, Colour colour)     const;
             void drawLine     (math::Vec2 from, math::Vec2 to,  Colour colour) const;
             void drawCircle   (math::Vec2 centre, float radius, Colour colour) const;
-            void drawSprite   (math::Transform2D transform, Colour colour)     const;
+            void drawSprite   (math::Transform2D transform)                    const;
 
         private:
             struct Impl;

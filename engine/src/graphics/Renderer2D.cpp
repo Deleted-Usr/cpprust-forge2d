@@ -18,6 +18,7 @@ namespace forge
     struct Renderer2D::Impl
     {
         std::unique_ptr<Shader> shapeShader;
+        std::unique_ptr<Shader> spriteShader;
 
         internal::opengl::VertexArray triangleVAO;
         internal::opengl::Buffer triangleVBO;
@@ -26,8 +27,10 @@ namespace forge
         internal::opengl::Buffer quadVBO;
         internal::opengl::Buffer quadEBO;
 
-        unsigned int texture1;
-        unsigned int texture2;
+        math::Mat4 projection = math::Mat4::orthographic(0.0f, 800, 600, 0.0f);
+
+        unsigned int texture1{};
+        unsigned int texture2{};
     };
 
     Renderer2D::Renderer2D(const std::filesystem::path& shaderDirectory) : impl_(std::make_unique<Impl>())
@@ -35,6 +38,11 @@ namespace forge
         impl_->shapeShader = std::make_unique<Shader>(
             shaderDirectory / "shape.vert.glsl",
             shaderDirectory / "shape.frag.glsl"
+        );
+
+        impl_->spriteShader = std::make_unique<Shader>(
+            shaderDirectory / "sprite.vert.glsl",
+            shaderDirectory / "sprite.frag.glsl"
         );
 
         initTriangle();
@@ -67,24 +75,22 @@ namespace forge
     void Renderer2D::initQuad()
     {
         constexpr float vertices[] = {
-            // positions          // texture coords
-            0.5f,  0.5f, 0.0f,    1.0f, 1.0f, // top right
-            0.5f, -0.5f, 0.0f,    1.0f, 0.0f, // bottom right
-           -0.5f, -0.5f, 0.0f,    0.0f, 0.0f, // bottom left
-           -0.5f,  0.5f, 0.0f,    0.0f, 1.0f  // top left
+            // positions         // texture coords
+            0.0f, 0.0f, 0.0f,    0.0f, 1.0f, // top-left
+            1.0f, 0.0f, 0.0f,    1.0f, 1.0f, // top-right
+            1.0f, 1.0f, 0.0f,    1.0f, 0.0f, // bottom-right
+            0.0f, 1.0f, 0.0f,    0.0f, 0.0f  // bottom-left
         };
 
         constexpr unsigned int indices[] = {
-            0, 1, 3, // first triangle
-            1, 2, 3  // second triangle
+            0, 1, 2,
+            2, 3, 0
         };
 
         // TODO - should have something similar to std::vector<VertexAttribute> but for texture options
 
-
-
-        loadTexture(impl_->texture1, "assets/container.jpg", GL_RGB);
-        loadTexture(impl_->texture2, "assets/img.png", GL_RGBA);
+        loadTexture(impl_->texture1, "assets/heart16x16.png", GL_RGBA);
+        loadTexture(impl_->texture2, "assets/heart16x16.png", GL_RGBA);
 
         impl_->quadVBO = internal::opengl::Buffer::createVertexBuffer(vertices, sizeof(vertices));
         impl_->quadEBO = internal::opengl::Buffer::createIndexBuffer(indices, sizeof(indices));
@@ -108,8 +114,8 @@ namespace forge
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
         int width, height, nrChannels;
         unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
@@ -146,6 +152,7 @@ namespace forge
 
         impl_->shapeShader->setVec4("uColour", colour.toVec4());
         impl_->shapeShader->setMat4("uModel", transform.matrix());
+        impl_->shapeShader->setMat4("uProjection", impl_->projection);
 
         impl_->triangleVAO.bind();
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -157,8 +164,23 @@ namespace forge
 
         impl_->shapeShader->setVec4("uColour", colour.toVec4());
         impl_->shapeShader->setMat4("uModel", transform.matrix());
-        impl_->shapeShader->setInt("texture1", 0);
-        impl_->shapeShader->setInt("texture2", 1);
+        impl_->shapeShader->setMat4("uProjection", impl_->projection);
+
+        impl_->quadVAO.bind();
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+    }
+
+    void Renderer2D::drawSprite(math::Transform2D transform) const
+    {
+        impl_->spriteShader->bind();
+
+        impl_->spriteShader->setMat4("uModel", transform.matrix());
+        impl_->spriteShader->setMat4("uProjection", impl_->projection);
+        impl_->spriteShader->setInt("texture1", 0);
+        impl_->spriteShader->setInt("texture2", 1);
+
+        // TODO - Loop through a set number of textures.
+        //  Take in an std::vector<Texture2D> and loop through
 
 
         glActiveTexture(GL_TEXTURE0);

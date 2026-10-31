@@ -70,7 +70,7 @@ namespace forge
         }
 
         if (glfwWindowCount >  0) --glfwWindowCount;
-        if (glfwWindowCount == 0) glfwTerminate();
+        if (glfwWindowCount == 0)   glfwTerminate();
     }
 
     bool Window::shouldClose() const

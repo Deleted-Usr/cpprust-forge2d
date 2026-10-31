@@ -6,6 +6,8 @@ add_library(
     # Core
     # --------------------------------------------------------
 
+    src/Assets/AssetManager.cpp
+
     src/core/Application.cpp
     src/core/Window.cpp
 
@@ -15,6 +17,7 @@ add_library(
 
     src/math/Mat4.cpp
     src/math/Transform2D.cpp
+
     src/time/Time.cpp
     src/time/Clock.cpp
 
