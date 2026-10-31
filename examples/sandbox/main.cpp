@@ -5,6 +5,8 @@
 #include <iostream>
 #include <memory>
 
+#include "forge2d/math/Math.hpp"
+
 namespace
 {
     class SandboxGame final : public forge::Game
@@ -30,7 +32,6 @@ namespace
                     renderer.drawRect(
                         forge::math::Transform2D {
                             .position = { 2.0f, 1.0f },
-                            .rotation = 0.0f,
                             .scale    = { 2.0f, 2.0f }
                         },
                         forge::colours::Cyan
@@ -42,7 +43,6 @@ namespace
                     renderer.drawTriangle(
                         forge::math::Transform2D {
                             .position = { 170.4f, 0.0f },
-                            .rotation = 0.0f,
                             .scale    = { 100.0f, 100.0f }
                         },
                         forge::colours::Red
@@ -69,10 +69,10 @@ int main()
     {
         forge::ApplicationConfig config;
 
-        config.window.title = "Forge2D Sandbox";
+        config.window.title     = "Forge2D Sandbox";
         config.window.resizable = false;
 
-        config.window.width = 800;
+        config.window.width  = 800;
         config.window.height = 600;
 
         config.assetRoot = "assets";

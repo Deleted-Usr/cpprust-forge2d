@@ -42,7 +42,5 @@ namespace forge
 
             void initTriangle();
             void initQuad();
-
-            void loadTexture(unsigned int& tex, const std::string& path, int format);
     };
 }

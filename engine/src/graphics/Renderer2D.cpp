@@ -26,9 +26,6 @@ namespace forge
         internal::opengl::Buffer quadEBO;
 
         math::Mat4 projection = math::Mat4::orthographic(0.0f, 800, 600, 0.0f);
-
-        unsigned int texture1{};
-        unsigned int texture2{};
     };
 
     Renderer2D::Renderer2D(const std::filesystem::path& shaderDirectory) : impl_(std::make_unique<Impl>())
