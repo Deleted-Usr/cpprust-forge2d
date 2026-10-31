@@ -8,7 +8,7 @@ namespace forge
     Application::Application(
         const ApplicationConfig& config,
         std::unique_ptr<Game> game
-    ) : window_(config.window), renderer_("shaders"), game_(std::move(game))
+    ) : window_(config.window), assets_(config.assetRoot), renderer_("shaders"), game_(std::move(game))
     { }
 
     int Application::run()
@@ -17,7 +17,7 @@ namespace forge
 
         auto previousTime = Clock::now();
 
-        game_->onStart();
+        game_->onStart(assets_);
 
         while (!window_.shouldClose())
         {

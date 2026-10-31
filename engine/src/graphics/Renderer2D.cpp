@@ -4,21 +4,19 @@
 #include <glad/gl.h>
 
 #include <forge2d/graphics/Renderer2D.hpp>
+#include <forge2d/graphics/Texture2D.hpp>
 
 #include <opengl/Shader.hpp>
 #include <opengl/array/VertexArray.hpp>
 #include <opengl/buffer/Buffer.hpp>
-
-#include <stb/stb_image.cpp>
-
 
 
 namespace forge
 {
     struct Renderer2D::Impl
     {
-        std::unique_ptr<Shader> shapeShader;
-        std::unique_ptr<Shader> spriteShader;
+        std::unique_ptr<internal::opengl::Shader> shapeShader;
+        std::unique_ptr<internal::opengl::Shader> spriteShader;
 
         internal::opengl::VertexArray triangleVAO;
         internal::opengl::Buffer triangleVBO;
@@ -35,12 +33,12 @@ namespace forge
 
     Renderer2D::Renderer2D(const std::filesystem::path& shaderDirectory) : impl_(std::make_unique<Impl>())
     {
-        impl_->shapeShader = std::make_unique<Shader>(
+        impl_->shapeShader = std::make_unique<internal::opengl::Shader>(
             shaderDirectory / "shape.vert.glsl",
             shaderDirectory / "shape.frag.glsl"
         );
 
-        impl_->spriteShader = std::make_unique<Shader>(
+        impl_->spriteShader = std::make_unique<internal::opengl::Shader>(
             shaderDirectory / "sprite.vert.glsl",
             shaderDirectory / "sprite.frag.glsl"
         );
@@ -76,21 +74,16 @@ namespace forge
     {
         constexpr float vertices[] = {
             // positions         // texture coords
-            0.0f, 0.0f, 0.0f,    0.0f, 1.0f, // top-left
-            1.0f, 0.0f, 0.0f,    1.0f, 1.0f, // top-right
-            1.0f, 1.0f, 0.0f,    1.0f, 0.0f, // bottom-right
-            0.0f, 1.0f, 0.0f,    0.0f, 0.0f  // bottom-left
+            0.0f, 0.0f, 0.0f,    0.0f, 0.0f, // top-left
+            1.0f, 0.0f, 0.0f,    1.0f, 0.0f, // top-right
+            1.0f, 1.0f, 0.0f,    1.0f, 1.0f, // bottom-right
+            0.0f, 1.0f, 0.0f,    0.0f, 1.0f  // bottom-left
         };
 
         constexpr unsigned int indices[] = {
             0, 1, 2,
             2, 3, 0
         };
-
-        // TODO - should have something similar to std::vector<VertexAttribute> but for texture options
-
-        loadTexture(impl_->texture1, "assets/heart16x16.png", GL_RGBA);
-        loadTexture(impl_->texture2, "assets/heart16x16.png", GL_RGBA);
 
         impl_->quadVBO = internal::opengl::Buffer::createVertexBuffer(vertices, sizeof(vertices));
         impl_->quadEBO = internal::opengl::Buffer::createIndexBuffer(indices, sizeof(indices));
@@ -103,30 +96,6 @@ namespace forge
 
         impl_->quadVAO.addVertexBuffer(impl_->quadVBO, layout);
         impl_->quadVAO.setIndexBuffer(impl_->quadEBO);
-    }
-
-    void Renderer2D::loadTexture(unsigned int& tex, const std::string& path, int format)
-    {
-        stbi_set_flip_vertically_on_load(true);
-
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_2D, tex);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        int width, height, nrChannels;
-        unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-
-        stbi_image_free(data);
     }
 
     void Renderer2D::beginFrame(const Colour& clearColor)
@@ -170,23 +139,19 @@ namespace forge
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-    void Renderer2D::drawSprite(math::Transform2D transform) const
+    void Renderer2D::drawSprite(const Texture2D& texture, math::Transform2D transform, Colour tint) const
     {
         impl_->spriteShader->bind();
 
         impl_->spriteShader->setMat4("uModel", transform.matrix());
         impl_->spriteShader->setMat4("uProjection", impl_->projection);
-        impl_->spriteShader->setInt("texture1", 0);
-        impl_->spriteShader->setInt("texture2", 1);
+        impl_->spriteShader->setVec4("uTint", tint.toVec4());
+        impl_->spriteShader->setInt("uTexture", 0);
 
         // TODO - Loop through a set number of textures.
         //  Take in an std::vector<Texture2D> and loop through
 
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, impl_->texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, impl_->texture2);
+        texture.bind(0);
 
         impl_->quadVAO.bind();
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

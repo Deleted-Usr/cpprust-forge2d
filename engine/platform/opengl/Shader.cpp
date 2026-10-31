@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace forge
+namespace forge::internal::opengl
 {
     std::string Shader::readFile(const std::filesystem::path& path)
     {

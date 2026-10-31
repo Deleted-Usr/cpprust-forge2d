@@ -11,6 +11,12 @@ namespace
     {
         public:
             float x = 0, y = 0;
+            const forge::Texture2D* heart;
+
+            void onStart(forge::AssetManager& assetManager) override
+            {
+                heart = &assetManager.loadTexture("heart16x16.png");
+            }
 
             void update(float deltaTime) override
             {
@@ -46,9 +52,9 @@ namespace
                 if (bool drawSprite = true)
                 {
                     renderer.drawSprite(
+                        *heart,
                         forge::math::Transform2D {
                             .position = { 100.f, 150.f },
-                            .rotation = 0.0f,
                             .scale    = { 128.0f, 128.0f }
                         }
                     );
@@ -68,6 +74,8 @@ int main()
 
         config.window.width = 800;
         config.window.height = 600;
+
+        config.assetRoot = "assets";
 
         forge::Application app(config, std::make_unique<SandboxGame>());
         return app.run();

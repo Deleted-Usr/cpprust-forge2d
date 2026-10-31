@@ -6,7 +6,7 @@ add_library(
     # Core
     # --------------------------------------------------------
 
-    src/Assets/AssetManager.cpp
+    src/assets/AssetManager.cpp
 
     src/core/Application.cpp
     src/core/Window.cpp
@@ -38,6 +38,7 @@ add_library(
     # --------------------------------------------------------
 
     platform/opengl/Shader.cpp
+    platform/opengl/Texture2D.cpp
     platform/opengl/OpenGLContext.cpp
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
@@ -47,6 +48,7 @@ add_library(
     # --------------------------------------------------------
 
     platform/stb/stb_image.cpp
+    src/assets/Image.cpp
 )
 
 # ============================================================

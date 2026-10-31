@@ -10,6 +10,8 @@
 
 namespace forge
 {
+    class Texture2D;
+
     class Renderer2D
     {
         public:
@@ -27,7 +29,12 @@ namespace forge
             void drawRect     (math::Transform2D transform, Colour colour)     const;
             void drawLine     (math::Vec2 from, math::Vec2 to,  Colour colour) const;
             void drawCircle   (math::Vec2 centre, float radius, Colour colour) const;
-            void drawSprite   (math::Transform2D transform)                    const;
+
+            void drawSprite (
+                const Texture2D& texture,
+                math::Transform2D transform,
+                Colour tint = colours::White
+            ) const;
 
         private:
             struct Impl;

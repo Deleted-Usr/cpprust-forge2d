@@ -8,7 +8,7 @@
 #include <forge2d/math/Vec2.hpp>
 #include "forge2d/math/Mat4.hpp"
 
-namespace forge
+namespace forge::internal::opengl
 {
     class Shader
     {

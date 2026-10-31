@@ -57,7 +57,7 @@ option(
 # DEPENDENCIES
 # ------------------------------------------------------------
 
-include(cmake/Dependencies.cmake)
+include(cmake/dependencies.cmake)
 
 # ------------------------------------------------------------
 # ENGINE

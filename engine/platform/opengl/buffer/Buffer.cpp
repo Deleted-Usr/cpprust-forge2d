@@ -60,11 +60,8 @@ namespace forge::internal::opengl
     {
         switch (type)
         {
-            case BufferType::ARRAY_BUFFER:
-                return GL_ARRAY_BUFFER;
-
-            case BufferType::ELEMENT_BUFFER:
-                return GL_ELEMENT_ARRAY_BUFFER;
+            case BufferType::ARRAY_BUFFER:   return GL_ARRAY_BUFFER;
+            case BufferType::ELEMENT_BUFFER: return GL_ELEMENT_ARRAY_BUFFER;
         }
 
         return GL_NONE;
@@ -74,14 +71,9 @@ namespace forge::internal::opengl
     {
         switch (usage)
         {
-            case BufferUsage::STATIC:
-                return GL_STATIC_DRAW;
-
-            case BufferUsage::DYNAMIC:
-                return GL_DYNAMIC_DRAW;
-
-            case BufferUsage::STREAM:
-                return GL_STREAM_DRAW;
+            case BufferUsage::STATIC:  return GL_STATIC_DRAW;
+            case BufferUsage::DYNAMIC: return GL_DYNAMIC_DRAW;
+            case BufferUsage::STREAM:  return GL_STREAM_DRAW;
         }
 
         return GL_STATIC_DRAW;

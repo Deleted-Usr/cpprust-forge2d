@@ -1,5 +1,6 @@
 // Game.hpp
 #pragma once
+#include "forge2d/assets/AssetManager.hpp"
 
 namespace forge
 {
@@ -10,7 +11,7 @@ namespace forge
         public:
             virtual ~Game() = default;
 
-            virtual void onStart() {}
+            virtual void onStart(AssetManager& assetManager) {}
             virtual void onStop()  {}
 
             virtual void update(float deltaTime)      = 0;
