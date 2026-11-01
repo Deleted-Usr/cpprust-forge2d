@@ -26,6 +26,7 @@ add_library(
     # --------------------------------------------------------
 
     src/graphics/Renderer2D.cpp
+    src/graphics/Texture2D.cpp
 
     # --------------------------------------------------------
     # GLFW
@@ -38,7 +39,7 @@ add_library(
     # --------------------------------------------------------
 
     platform/opengl/Shader.cpp
-    src/graphics/Texture2D.cpp
+    platform/opengl/textures/GPUTexture.cpp
     platform/opengl/OpenGLContext.cpp
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
@@ -49,7 +50,6 @@ add_library(
 
     platform/stb/stb_image.cpp
     src/assets/Image.cpp
-    platform/opengl/textures/GPUTexture.cpp
 )
 
 # ============================================================
