@@ -112,7 +112,7 @@ namespace forge
         // Nothing yet.
     }
 
-    void Renderer2D::drawTriangle(math::Transform2D transform, const Colour colour) const
+    void Renderer2D::drawTriangle(math::Transform2D transform, const Colour colour, bool fill) const
     {
         impl_->shapeShader->bind();
 
@@ -124,7 +124,7 @@ namespace forge
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    void Renderer2D::drawRect(math::Transform2D transform, const Colour colour) const
+    void Renderer2D::drawRect(math::Transform2D transform, const Colour colour, bool fill) const
     {
         impl_->shapeShader->bind();
 
@@ -159,7 +159,7 @@ namespace forge
 
     }
 
-    void Renderer2D::drawCircle(math::Vec2 center, float radius, const Colour colour) const
+    void Renderer2D::drawCircle(math::Vec2 center, float radius, const Colour colour, bool fill) const
     {
 
     }

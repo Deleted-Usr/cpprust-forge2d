@@ -1,11 +1,8 @@
-
 #include <forge2d/core/Application.hpp>
 
 #include <exception>
 #include <iostream>
 #include <memory>
-
-#include "forge2d/math/Math.hpp"
 
 namespace
 {
@@ -13,11 +10,11 @@ namespace
     {
         public:
             float x = 0, y = 0;
-            const forge::Texture2D* heart;
+            const forge::Texture2D* heart{};
 
             void onStart(forge::AssetManager& assetManager) override
             {
-                heart = &assetManager.loadTexture("heart16x16.png");
+                heart = &assetManager.loadTexture("container.jpg");
             }
 
             void update(float deltaTime) override
@@ -31,8 +28,8 @@ namespace
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
-                            .position = { 2.0f, 1.0f },
-                            .scale    = { 2.0f, 2.0f }
+                            .position = { 15.0f, 15.0f },
+                            .scale    = { 100.0f, 100.0f }
                         },
                         forge::colours::Cyan
                     );
@@ -55,7 +52,7 @@ namespace
                         *heart,
                         forge::math::Transform2D {
                             .position = { 100.f, 150.f },
-                            .scale    = { 128.0f, 128.0f }
+                            .scale    = { 512.0f, 512.0f }
                         }
                     );
                 }

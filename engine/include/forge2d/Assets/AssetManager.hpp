@@ -10,12 +10,11 @@
 #include <vector>
 
 #include <forge2d/assets/AssetID.hpp>
+#include <forge2d/graphics/Texture2D.hpp>
 
 namespace forge
 {
-    class Texture2D;
-
-    using TextureList = std::vector<std::reference_wrapper<const Texture2D>>;
+    using TextureList = std::vector<Texture2D>;
 
     /// Owns and caches every loaded asset. Not a singleton: Application owns one
     /// and hands it to the game, so its lifetime is tied to the GL context.
@@ -23,8 +22,12 @@ namespace forge
     /// Threading: call it from the main (GL) thread only. preloadTextures() decodes
     /// files on worker threads internally and uploads them on the calling thread.
     ///
-    /// Returned references stay valid until the AssetManager goes out of scope or
-    /// is destroyed.
+    /// loadTexture() returns a reference to the cached handle, so callers can either:
+    ///  - copy it:     forge::Texture2D heart = assets.loadTexture(...);
+    ///  - point at it: const forge::Texture2D* heart = &assetManager.loadTexture(...);
+    ///
+    /// A copy keeps the GPU texture alive by itself. A pointer/reference stays valid
+    /// until the AssetManager is destroyed.
     class AssetManager
     {
         public:
@@ -51,7 +54,20 @@ namespace forge
                 {
                     const auto path = std::invoke(pathFn, i); // keep the string alive for the call
 
-                    out.emplace_back(loadTexture(std::string_view(path)));
+                    // Was emplace_back(..) because the vector held std::reference_wrappers
+                    // so a new reference_wrapper had to be constructed from that argument
+                    // and constructing an element from arguments in place is what emplace_back
+                    // is for.
+                    //
+                    // Emplace_back can also call explicit contructors, but push_back only allows
+                    // implicit conversions, so emplace_back can hide mistakes that push_back would
+                    // catch.
+                    //
+                    // emplace_back(constructor arguments)
+                    // push_back(object)
+                    //
+                    // Is now push_back to show proper code intent. (emplace_back would provide the same result)
+                    out.push_back(loadTexture(std::string_view(path)));
                 }
 
                 return out;

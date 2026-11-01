@@ -25,10 +25,10 @@ namespace forge
             void beginFrame(const Colour& clearColour);
             void endFrame();
 
-            void drawTriangle (math::Transform2D transform, Colour colour)     const;
-            void drawRect     (math::Transform2D transform, Colour colour)     const;
-            void drawLine     (math::Vec2 from, math::Vec2 to,  Colour colour) const;
-            void drawCircle   (math::Vec2 centre, float radius, Colour colour) const;
+            void drawTriangle (math::Transform2D transform,     Colour colour, bool fill = true) const;
+            void drawRect     (math::Transform2D transform,     Colour colour, bool fill = true) const;
+            void drawCircle   (math::Vec2 centre, float radius, Colour colour, bool fill = true) const;
+            void drawLine     (math::Vec2 from, math::Vec2 to,  Colour colour)                   const;
 
             void drawSprite (
                 const Texture2D& texture,

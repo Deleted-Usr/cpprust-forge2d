@@ -26,47 +26,56 @@ namespace forge::internal
 
     /// Generic "computeIfAbsent" cache with a fallback for failed loads.
     /// One instance per asset type (textures now, fonts/sounds later).
+    ///
+    /// Convention: every asset type is a cheap, copyable handle (like Texture2D),
+    /// so failed keys can simply hold a copy of the fallback handle.
     template <typename T>
     class AssetCache
     {
         public:
-            AssetCache(std::string_view kind, T fallback) : kind_(kind), fallback_(std::make_unique<const T>(std::move(fallback))) { }
+            AssetCache(std::string_view kind, T fallback) : kind_(kind), fallback_(std::move(fallback)) { }
 
+            /// Returns the cached asset, or calls load() and caches the result.
+            /// If load() throws AssetError, the failure is logged and the fallback is
+            /// cached under this key, so a bad path is only attempted (and logged) once.
+            ///
+            /// The returned reference is stable: unordered_map never moves its
+            /// elements, so it stays valid until clear() or the cache is destroyed.
             template <std::invocable Loader> requires std::convertible_to<std::invoke_result_t<Loader&>, T>
             const T& getOrLoad(std::string_view key, Loader&& load)
             {
                 if (const auto it = entries_.find(key); it != entries_.end())
                 {
-                    return *it->second;
+                    return it->second;
                 }
 
-                std::shared_ptr<const T> value;
+                T value = [&]() -> T {
+                    try
+                    {
+                        return std::invoke(load);
+                    }
+                    catch (const AssetError& e)
+                    {
+                        // TODO: route through the engine logger once it exists.
 
-                try
-                {
-                    value = std::make_shared<const T>(std::invoke(load));
-                }
-                catch (const AssetError& e)
-                {
-                    // TODO - route through the engine logger once there is one
-                    std::cerr << "[AssetManager] could not load " << kind_ << ": " << key << " (" << e.what() << ")\n";
-                    value = fallback_;
-                }
+                        std::cerr << "[AssetManager] could not load " << kind_ << ": " << key << " (" << e.what() << ")\n";
+                        return fallback_;
+                    }
+                }();
 
-                return *entries_.emplace(std::string(key), std::move(value)).first->second;
+                return entries_.emplace(std::string(key), std::move(value)).first->second;
             }
 
             [[nodiscard]] bool contains(std::string_view key) const { return entries_.contains(key); }
-            [[nodiscard]] const T& fallback() const { return *fallback_; }
+            [[nodiscard]] const T& fallback() const { return fallback_; }
             [[nodiscard]] std::size_t size()  const { return entries_.size(); }
 
             void clear() noexcept { entries_.clear(); }
 
         private:
             std::string kind_;
-            std::shared_ptr<const T> fallback_;
+            T fallback_;
 
-            // shared_ptr so every failed key can point at the one fallback instance.
-            std::unordered_map<std::string, std::shared_ptr<const T>, StringHash, std::equal_to<>> entries_;
+            std::unordered_map<std::string, T, StringHash, std::equal_to<>> entries_;
     };
 }

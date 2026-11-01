@@ -31,10 +31,6 @@ namespace forge::internal::opengl
             [[nodiscard]]
             unsigned int id() const { return id_; }
 
-            [[nodiscard]]
-            static GLenum toOpenGLType(BufferType type);
-            static GLenum toOpenGLUsage(BufferUsage usage);
-
         private:
             Buffer(BufferType type, const void* data, GLsizeiptr size, BufferUsage usage);
 

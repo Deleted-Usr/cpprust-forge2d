@@ -1,13 +1,14 @@
-#include <forge2d/graphics/Texture2D.hpp>
-#include <forge2d/assets/Image.hpp>
+#include <opengl/textures/GPUTexture.hpp>
 
 #include <algorithm>
 #include <bit>
-#include <utility>
 
 #include <glad/gl.h>
 
-namespace forge
+#include <forge2d/assets/Image.hpp>
+#include <forge2d/graphics/Texture2D.hpp>
+
+namespace forge::internal
 {
     namespace
     {
@@ -36,7 +37,7 @@ namespace forge
         }
     }
 
-    Texture2D::Texture2D(const Image& image, const TextureOptions& options) : width_(image.width), height_(image.height)
+    GPUTexture::GPUTexture(const Image& image, const TextureOptions& options)
     {
         // DSA: no glBindTexture needed to configure the texture.
         glCreateTextures(GL_TEXTURE_2D, 1, &id_);
@@ -48,11 +49,11 @@ namespace forge
 
         // bit_width(n) == floor(log2(n)) + 1 == full mip chain length
         const auto levels = options.mipmaps
-            ? std::bit_width(static_cast<unsigned>(std::max(width_, height_)))
+            ? std::bit_width(static_cast<unsigned>(std::max(image.width, image.height)))
             : 1;
 
-        glTextureStorage2D(id_, levels, GL_RGBA8, width_, height_);
-        glTextureSubImage2D(id_, 0, 0, 0, width_, height_, GL_RGBA, GL_UNSIGNED_BYTE, image.pixels.data());
+        glTextureStorage2D(id_, levels, GL_RGBA8, image.width, image.height);
+        glTextureSubImage2D(id_, 0, 0, 0, image.width, image.height, GL_RGBA, GL_UNSIGNED_BYTE, image.pixels.data());
 
         if (options.mipmaps)
         {
@@ -60,7 +61,7 @@ namespace forge
         }
     }
 
-    Texture2D::~Texture2D()
+    GPUTexture::~GPUTexture()
     {
         if (id_ != 0)
         {
@@ -68,26 +69,7 @@ namespace forge
         }
     }
 
-    Texture2D::Texture2D(Texture2D&& other) noexcept : id_(std::exchange(other.id_, 0)), width_(other.width_), height_(other.height_) { }
-
-    Texture2D& Texture2D::operator=(Texture2D&& other) noexcept
-    {
-        if (this != &other)
-        {
-            if (id_ != 0)
-            {
-                glDeleteTextures(1, &id_);
-            }
-
-            id_     = std::exchange(other.id_, 0);
-            width_  = other.width_;
-            height_ = other.height_;
-        }
-
-        return *this;
-    }
-
-    void Texture2D::bind(const unsigned int slot) const
+    void GPUTexture::bind(const unsigned int slot) const
     {
         glBindTextureUnit(slot, id_);
     }

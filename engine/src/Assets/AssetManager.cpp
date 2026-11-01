@@ -56,7 +56,7 @@ namespace forge
 
         internal::AssetCache<Texture2D> textures;
 
-        explicit Impl(std::filesystem::path assetRoot) : root(std::move(assetRoot)), textures("texture", Texture2D(makeMissingTexture())) { }
+        explicit Impl(std::filesystem::path assetRoot) : root(std::move(assetRoot)), textures("texture", Texture2D::create(makeMissingTexture())) { }
 
         void assertOwnerThread() const
         {
@@ -85,7 +85,7 @@ namespace forge
         const std::string key = normaliseKey(path);
 
         return impl_->textures.getOrLoad(key, [&] {
-            return Texture2D(Image::load(impl_->resolve(key)));
+            return Texture2D::create(Image::load(impl_->resolve(key)));
         });
     }
 
@@ -126,7 +126,7 @@ namespace forge
         for (Job& job : jobs)
         {
             impl_->textures.getOrLoad(job.key, [&] {
-                return Texture2D(job.image.get());
+                return Texture2D::create(job.image.get());
             });
         }
     }
