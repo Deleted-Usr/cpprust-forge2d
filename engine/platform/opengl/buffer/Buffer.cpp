@@ -2,32 +2,6 @@
 
 namespace forge::internal::opengl
 {
-    namespace
-    {
-        GLenum openGLBufferType(BufferType type)
-        {
-            switch (type)
-            {
-                case BufferType::ARRAY_BUFFER:   return GL_ARRAY_BUFFER;
-                case BufferType::ELEMENT_BUFFER: return GL_ELEMENT_ARRAY_BUFFER;
-            }
-
-            return GL_NONE;
-        }
-
-        GLenum openGLBufferUsage(BufferUsage usage)
-        {
-            switch (usage)
-            {
-                case BufferUsage::STATIC:  return GL_STATIC_DRAW;
-                case BufferUsage::DYNAMIC: return GL_DYNAMIC_DRAW;
-                case BufferUsage::STREAM:  return GL_STREAM_DRAW;
-            }
-
-            return GL_NONE;
-        }
-    }
-
     Buffer::Buffer(BufferType type, const void* data, GLsizeiptr size, BufferUsage usage) : type_(type)
     {
         glCreateBuffers(1, &id_);

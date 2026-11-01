@@ -1,8 +1,9 @@
 #include <forge2d/core/Window.hpp>
 
-#include "../../platform/opengl/OpenGLContext.hpp"
-
 #include <stdexcept>
+
+#include <opengl/OpenGLContext.hpp>
+#include <forge2d/debug/Log.hpp>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -31,6 +32,10 @@ namespace forge
 
         glfwWindowHint(GLFW_RESIZABLE, config.resizable);
 
+        #ifdef FORGE2D_DEBUG
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+        #endif
+
         handle_ = glfwCreateWindow(
             config.width,
             config.height,
@@ -48,6 +53,10 @@ namespace forge
 
             throw std::runtime_error("Failed to create GLFW window");
         }
+
+        glfwSetErrorCallback([](int code, const char* description) {
+            FORGE_LOG_ERROR("[GLFW] {} (code {})", description, code);
+        });
 
         ++glfwWindowCount;
 

@@ -1,12 +1,14 @@
 #include "OpenGLContext.hpp"
 
-#include <stdexcept>
+#include <forge2d/debug/Assert.hpp>
+#include "OpenGLDebug.hpp"
 
 #include <glad/gl.h>
 
 #define GLFW_INCLUDE_NONE
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
+
 
 namespace forge
 {
@@ -16,10 +18,12 @@ namespace forge
     {
         glfwMakeContextCurrent(window_);
 
-        if (gladLoadGL(glfwGetProcAddress) == 0)
-        {
-            throw std::runtime_error("Failed to initialise GLAD");
-        }
+        FORGE_CHECK(gladLoadGL(glfwGetProcAddress) != 0, "Failed to initialise GLAD");
+
+        internal::opengl::logDriverInfo();
+        #ifdef FORGE_DEBUG
+            internal::opengl::enableDriverOutput();
+        #endif
 
         int width, height;
 

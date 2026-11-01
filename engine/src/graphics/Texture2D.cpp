@@ -1,11 +1,11 @@
 #include <forge2d/graphics/Texture2D.hpp>
 
-#include <cassert>
 #include <utility>
 
 #include <opengl/textures/GPUTexture.hpp>
 
 #include <forge2d/assets/Image.hpp>
+#include <forge2d/debug/Assert.hpp>
 
 namespace forge
 {
@@ -18,7 +18,7 @@ namespace forge
 
     void Texture2D::bind(const unsigned int slot) const
     {
-        assert(valid() && "Drawing an empty Texture2D: did you forget to assign it from loadTexture()?");
+        FORGE_ASSERT(valid(), "Drawing an empty Texture2D: did you forget to assign it from loadTexture()?");
 
         gpu_->bind(slot);
     }

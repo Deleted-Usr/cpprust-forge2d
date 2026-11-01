@@ -5,6 +5,8 @@
 #include "BufferType.hpp"
 #include "BufferUsage.hpp"
 
+#include <opengl/GLTypeConversions.hpp>
+
 namespace forge::internal::opengl
 {
     class Buffer

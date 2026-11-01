@@ -36,6 +36,13 @@ add_library(
     src/assets/Image.cpp
 
     # --------------------------------------------------------
+    # Debug
+    # --------------------------------------------------------
+
+    src/debug/Log.cpp
+    src/debug/Assert.cpp
+
+    # --------------------------------------------------------
     # GLFW
     # --------------------------------------------------------
 
@@ -45,9 +52,11 @@ add_library(
     # OpenGL
     # --------------------------------------------------------
 
-    platform/opengl/Shader.cpp
-    platform/opengl/textures/GPUTexture.cpp
     platform/opengl/OpenGLContext.cpp
+    platform/opengl/OpenGLDebug.cpp
+
+    platform/opengl/shaders/Shader.cpp
+    platform/opengl/textures/GPUTexture.cpp
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
 
@@ -56,6 +65,7 @@ add_library(
     # --------------------------------------------------------
 
     platform/vulkan/VulkanInstance.cpp
+    platform/opengl/GLTypeConversions.hpp
 )
 
 # ============================================================
@@ -148,6 +158,6 @@ endif()
 target_compile_definitions(
     forge2d
 
-    PRIVATE
+    PUBLIC
         $<$<CONFIG:Debug>:FORGE2D_DEBUG>
 )

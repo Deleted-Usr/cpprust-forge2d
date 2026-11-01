@@ -1,15 +1,14 @@
-#include <iostream>
 #include <ranges>
 
 #include <glad/gl.h>
 
-#include <forge2d/graphics/Renderer2D.hpp>
-#include <forge2d/graphics/Texture2D.hpp>
-
-#include <opengl/Shader.hpp>
+#include <opengl/shaders/Shader.hpp>
 #include <opengl/array/VertexArray.hpp>
 #include <opengl/buffer/Buffer.hpp>
 
+#include <forge2d/debug/Assert.hpp>
+#include <forge2d/graphics/Renderer2D.hpp>
+#include <forge2d/graphics/Texture2D.hpp>
 
 namespace forge
 {
@@ -138,6 +137,8 @@ namespace forge
 
     void Renderer2D::drawSprite(const Texture2D& texture, math::Transform2D transform, Colour tint) const
     {
+        if (!FORGE_ENSURE(texture.valid(), "drawSprite called with an empty Texture2D")) return;
+
         impl_->spriteShader->bind();
 
         impl_->spriteShader->setMat4("uModel", transform.matrix());

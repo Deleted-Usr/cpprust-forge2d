@@ -3,12 +3,12 @@
 #include <concepts>
 #include <functional>
 #include <iostream>
-#include <memory>
 #include <string>
 #include <string_view>
 #include <unordered_map>
 
 #include <forge2d/assets/AssetError.hpp>
+#include <forge2d/debug/Log.hpp>
 
 namespace forge::internal
 {
@@ -58,7 +58,7 @@ namespace forge::internal
                     {
                         // TODO: route through the engine logger once it exists.
 
-                        std::cerr << "[AssetManager] could not load " << kind_ << ": " << key << " (" << e.what() << ")\n";
+                        FORGE_LOG_WARN("[AssetManager] could not load {}: {} ({})", kind_, key, e.what());
                         return fallback_;
                     }
                 }();
