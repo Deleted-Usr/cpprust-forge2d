@@ -6,7 +6,7 @@ namespace forge::internal::opengl
 {
     VertexArray::VertexArray()
     {
-        glGenVertexArrays(1, &id_);
+        glCreateVertexArrays(1, &id_);
     }
 
     VertexArray::~VertexArray()
@@ -45,33 +45,42 @@ namespace forge::internal::opengl
         glBindVertexArray(0);
     }
 
-    void VertexArray::addVertexBuffer(const Buffer& vbo, const std::vector<VertexAttribute>& attributes)
+    void VertexArray::addVertexBuffer(const Buffer& vbo, GLsizei stride, const std::vector<VertexAttribute>& attributes, GLuint bindingIndex)
     {
-        glBindVertexArray(id_);
-        vbo.bind();
+        // Attach this VBO to a vertex-buffer binding slot.
+        glVertexArrayVertexBuffer(
+            id_,
+            bindingIndex,
+            vbo.id(),
+            0,                  // Starting byte offset in the VBO
+            stride
+        );
 
         for (const auto& attr : attributes)
         {
-            glVertexAttribPointer(
+            // Describe how to interpret this attribute.
+            glVertexArrayAttribFormat(
+                id_,
                 attr.index,
                 attr.size,
                 attr.type,
                 attr.normalised,
-                attr.stride,
-                reinterpret_cast<void*>(attr.offset)
+                attr.offset
             );
-            glEnableVertexAttribArray(attr.index);
-        }
 
-        glBindVertexArray(0);
-        vbo.unbind();
+            // Make this attribute read from the selected VBO binding.
+            glVertexArrayAttribBinding(
+                id_,
+                attr.index,
+                bindingIndex
+            );
+
+            glEnableVertexArrayAttrib(id_, attr.index);
+        }
     }
 
     void VertexArray::setIndexBuffer(const Buffer& ebo)
     {
-        glBindVertexArray(id_);
-        ebo.bind(); // When bound inside a VAO bind session, the EBO is saved to the VAO state
-
-        unbind();
+        glVertexArrayElementBuffer(id_, ebo.id());
     }
 }

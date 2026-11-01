@@ -61,10 +61,10 @@ namespace forge
 
         constexpr int stride = 3 * sizeof(float);
         std::vector<internal::opengl::VertexAttribute> layout = {
-            { 0, 3, GL_FLOAT, GL_FALSE, stride, 0 }
+            { 0, 3, GL_FLOAT, GL_FALSE, 0 }
         };
 
-        impl_->triangleVAO.addVertexBuffer(impl_->triangleVBO, layout);
+        impl_->triangleVAO.addVertexBuffer(impl_->triangleVBO, stride, layout);
     }
 
     void Renderer2D::initQuad()
@@ -87,11 +87,11 @@ namespace forge
 
         constexpr int stride = 5 * sizeof(float);
         std::vector<internal::opengl::VertexAttribute> layout = {
-            { 0, 3, GL_FLOAT, GL_FALSE, stride, 0 },
-            { 1, 2, GL_FLOAT, GL_FALSE, stride, 3 * sizeof(float) },
+            { 0, 3, GL_FLOAT, GL_FALSE, 0 },
+            { 1, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float) },
         };
 
-        impl_->quadVAO.addVertexBuffer(impl_->quadVBO, layout);
+        impl_->quadVAO.addVertexBuffer(impl_->quadVBO, stride, layout);
         impl_->quadVAO.setIndexBuffer(impl_->quadEBO);
     }
 

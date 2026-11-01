@@ -30,11 +30,7 @@ namespace forge
             void drawCircle   (math::Vec2 centre, float radius, Colour colour, bool fill = true) const;
             void drawLine     (math::Vec2 from, math::Vec2 to,  Colour colour)                   const;
 
-            void drawSprite (
-                const Texture2D& texture,
-                math::Transform2D transform,
-                Colour tint = colours::White
-            ) const;
+            void drawSprite(const Texture2D& texture, math::Transform2D transform, Colour tint = colours::White) const;
 
         private:
             struct Impl;
