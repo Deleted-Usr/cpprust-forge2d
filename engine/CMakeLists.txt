@@ -56,7 +56,7 @@ add_library(
     platform/opengl/OpenGLDebug.cpp
 
     platform/opengl/shaders/Shader.cpp
-    platform/opengl/textures/GPUTexture.cpp
+    platform/opengl/textures/GLTexture.cpp
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
 

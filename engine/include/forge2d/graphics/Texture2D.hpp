@@ -8,7 +8,7 @@ namespace forge
 
     namespace internal
     {
-        class GPUTexture;
+        class GLTexture;
     }
 
     enum class TextureFilter { NEAREST, LINEAR };
@@ -53,9 +53,9 @@ namespace forge
             void bind(unsigned int slot) const;
 
         private:
-            Texture2D(std::shared_ptr<const internal::GPUTexture> gpu, int width, int height) noexcept;
+            Texture2D(std::shared_ptr<const internal::GLTexture> gpu, int width, int height) noexcept;
 
-            std::shared_ptr<const internal::GPUTexture> gpu_;
+            std::shared_ptr<const internal::GLTexture> gpu_;
 
             int width_  = 0;
             int height_ = 0;

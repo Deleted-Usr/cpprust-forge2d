@@ -1,4 +1,4 @@
-#include <opengl/textures/GPUTexture.hpp>
+#include <opengl/textures/GLTexture.hpp>
 
 #include <algorithm>
 #include <bit>
@@ -37,7 +37,7 @@ namespace forge::internal
         }
     }
 
-    GPUTexture::GPUTexture(const Image& image, const TextureOptions& options)
+    GLTexture::GLTexture(const Image& image, const TextureOptions& options)
     {
         // DSA: no glBindTexture needed to configure the texture.
         glCreateTextures(GL_TEXTURE_2D, 1, &id_);
@@ -61,7 +61,7 @@ namespace forge::internal
         }
     }
 
-    GPUTexture::~GPUTexture()
+    GLTexture::~GLTexture()
     {
         if (id_ != 0)
         {
@@ -69,7 +69,7 @@ namespace forge::internal
         }
     }
 
-    void GPUTexture::bind(const unsigned int slot) const
+    void GLTexture::bind(const unsigned int slot) const
     {
         glBindTextureUnit(slot, id_);
     }
