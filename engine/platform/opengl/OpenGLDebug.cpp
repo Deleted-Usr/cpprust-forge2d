@@ -1,11 +1,16 @@
 #include <opengl/OpenGLDebug.hpp>
 
 #include <string_view>
-
 #include <glad/gl.h>
 
+#include <opengl/GLConversions.hpp>
+
 #include <forge2d/debug/Log.hpp>
-#include <opengl/GLTypeConversions.hpp>
+
+// TODO -
+//  An extra for later: glObjectLabel(GL_TEXTURE, id, -1, "heart16x16.png") puts asset names on GL objects.
+//  Driver messages and tools like RenderDoc then show “heart16x16.png” instead of “texture 7”. GpuTexture
+//  could take the path as a debug name.
 
 namespace forge::internal::opengl
 {

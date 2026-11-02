@@ -56,8 +56,6 @@ namespace forge::internal
                     }
                     catch (const AssetError& e)
                     {
-                        // TODO: route through the engine logger once it exists.
-
                         FORGE_LOG_WARN("[AssetManager] could not load {}: {} ({})", kind_, key, e.what());
                         return fallback_;
                     }

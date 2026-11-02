@@ -65,7 +65,6 @@ add_library(
     # --------------------------------------------------------
 
     platform/vulkan/VulkanInstance.cpp
-    platform/opengl/GLTypeConversions.hpp
 )
 
 # ============================================================
@@ -135,18 +134,18 @@ target_link_libraries(
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(
-       forge2d
+        forge2d
 
-       PRIVATE
+        PRIVATE
             -Wall
             -Wextra
             -Wpedantic
     )
 elseif(MSVC)
     target_compile_options(
-       forge2d
+        forge2d
 
-       PRIVATE
+        PRIVATE
             /W4
     )
 endif()

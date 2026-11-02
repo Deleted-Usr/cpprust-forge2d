@@ -24,7 +24,9 @@ namespace
 
             void render(forge::Renderer2D& renderer) override
             {
-                if (bool drawRect = true)
+                renderer.drawLine({ 200.f, 200.f }, { 250.f, 280.f }, forge::colours::Cyan);
+
+                if (bool drawRect = false)
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
@@ -46,7 +48,7 @@ namespace
                     );
                 }
 
-                if (bool drawSprite = true)
+                if (bool drawSprite = false)
                 {
                     renderer.drawSprite(
                         *heart,

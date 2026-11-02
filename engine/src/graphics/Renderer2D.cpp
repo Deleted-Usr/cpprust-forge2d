@@ -24,6 +24,9 @@ namespace forge
         internal::opengl::Buffer quadVBO;
         internal::opengl::Buffer quadEBO;
 
+        internal::opengl::VertexArray lineVAO;
+        internal::opengl::Buffer lineVBO;
+
         math::Mat4 projection = math::Mat4::orthographic(0.0f, 800, 600, 0.0f);
     };
 
@@ -41,6 +44,7 @@ namespace forge
 
         initTriangle();
         initQuad();
+        initLine();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -92,6 +96,23 @@ namespace forge
 
         impl_->quadVAO.addVertexBuffer(impl_->quadVBO, stride, layout);
         impl_->quadVAO.setIndexBuffer(impl_->quadEBO);
+    }
+
+    void Renderer2D::initLine()
+    {
+        constexpr float vertices[] = {
+            0.0f, 0.0f, 0.0f,
+            1.0f, 0.0f, 0.0f,
+        };
+
+        impl_->lineVBO = internal::opengl::Buffer::createVertexBuffer(vertices, sizeof(vertices));
+
+        constexpr int stride = 3 * sizeof(float);
+        std::vector<internal::opengl::VertexAttribute> layout = {
+            {0, 3, GL_FLOAT, GL_FALSE, 0 }
+        };
+
+        impl_->lineVAO.addVertexBuffer(impl_->lineVBO, stride, layout);
     }
 
     void Renderer2D::beginFrame(const Colour& clearColor)
@@ -157,7 +178,22 @@ namespace forge
 
     void Renderer2D::drawLine(math::Vec2 from, math::Vec2 to, const Colour colour) const
     {
+        const auto delta = to - from;
+        if (delta.length() == 0.0f) return;
 
+        math::Transform2D transform;
+        transform.position = from;
+        transform.rotation = std::atan2(delta.y, delta.x);
+        transform.scale = { delta.length(), 1.0f };
+
+        impl_->shapeShader->bind();
+
+        impl_->shapeShader->setVec4("uColour", colour.toVec4());
+        impl_->shapeShader->setMat4("uModel", transform.matrix());
+        impl_->shapeShader->setMat4("uProjection", impl_->projection);
+
+        impl_->lineVAO.bind();
+        glDrawArrays(GL_LINES, 0, 2);
     }
 
     void Renderer2D::drawCircle(math::Vec2 center, float radius, const Colour colour, bool fill) const

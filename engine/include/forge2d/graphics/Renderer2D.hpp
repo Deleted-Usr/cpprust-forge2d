@@ -38,5 +38,6 @@ namespace forge
 
             void initTriangle();
             void initQuad();
+            void initLine();
     };
 }

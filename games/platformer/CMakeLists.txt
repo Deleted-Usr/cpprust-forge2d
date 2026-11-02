@@ -4,6 +4,8 @@ add_executable(
     src/main.cpp
     src/PlatformerGame.cpp
     src/PlatformerGame.hpp
+    src/assets/Assets.hpp
+    src/assets/Assets.cpp
 
     # EXAMPLES
     # src/Platformer.cpp

@@ -30,6 +30,9 @@ namespace forge
     /// until the AssetManager is destroyed.
     class AssetManager
     {
+        // The value version is actually the safer one: a copy keeps its texture alive on its own, so it can’t dangle.
+        // The pointer is non-owning and valid only while the AssetManager exists. Because Application destroys the
+        // game before the asset manager, both styles are safe in normal use.
         public:
             explicit AssetManager(std::filesystem::path assetRoot);
             ~AssetManager();

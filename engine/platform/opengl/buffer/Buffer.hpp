@@ -5,7 +5,7 @@
 #include "BufferType.hpp"
 #include "BufferUsage.hpp"
 
-#include <opengl/GLTypeConversions.hpp>
+#include <opengl/GLConversions.hpp>
 
 namespace forge::internal::opengl
 {
