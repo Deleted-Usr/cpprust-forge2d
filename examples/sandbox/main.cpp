@@ -14,7 +14,7 @@ namespace
 
             void onStart(forge::AssetManager& assetManager) override
             {
-                heart = &assetManager.loadTexture("container.jpg");
+                heart = &assetManager.loadTexture("heart16x16.png");
             }
 
             void update(float deltaTime) override
@@ -24,8 +24,6 @@ namespace
 
             void render(forge::Renderer2D& renderer) override
             {
-                renderer.drawLine({ 200.f, 200.f }, { 250.f, 280.f }, forge::colours::Cyan);
-
                 if (bool drawRect = false)
                 {
                     renderer.drawRect(
@@ -37,18 +35,18 @@ namespace
                     );
                 }
 
-                if (bool drawTriangle = false)
+                if (bool drawTriangle = true)
                 {
                     renderer.drawTriangle(
                         forge::math::Transform2D {
-                            .position = { 170.4f, 0.0f },
-                            .scale    = { 100.0f, 100.0f }
+                            .position = { 170.4f, 50.0f },
+                            .scale    = { 200.0f, 200.0f }
                         },
                         forge::colours::Red
                     );
                 }
 
-                if (bool drawSprite = false)
+                if (bool drawSprite = true)
                 {
                     renderer.drawSprite(
                         *heart,

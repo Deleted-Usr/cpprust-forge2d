@@ -65,6 +65,7 @@ add_library(
     # --------------------------------------------------------
 
     platform/vulkan/VulkanInstance.cpp
+    src/input/InputManager.cpp
 )
 
 # ============================================================

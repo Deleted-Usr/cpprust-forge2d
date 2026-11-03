@@ -50,6 +50,60 @@ for a different part of the design.
   and textures. Best for understanding the fundamentals before adding batching. (**has been heavily referenced all the
   way through development**)
 
+### Shape Batching
+
+The first big architectural improvement the Renderer needs is shape or sprite batching. Shape or sprite batching in
+OpenGL is the process of grouping multiple shapes or sprites into a single large vertex buffer and flushing that buffer
+using a single draw call. This removes the need to call `glDrawArrays` or `glDrawElements` separately for every single
+object. 
+
+This greatly reduces CPU-to-GPU overhead, as each draw call indroduces driver hardware overhead, grouping objectscuts 
+thousands of draw calls down to just one. It improves frame rates by minimising state changes and draw calls bottlenecks.
+And it optimises memory bandwidth by sending one large chunk of data via a single buffer update, which is obviously
+much faster than many small scattered transfers.
+
+#### How it works
+
+Shape batching can be done in various ways, but the most prominent way sprite batching is done uses 4 general steps:
+1. **Allocate a Shared Buffer**: Create a fixed-size Vertex Buffer Object (VBO) on the GPU using `GL_DYNAMIC_DRAW`
+   since geometry updates every frame.
+
+2. **Pack Vertex Data**: For each shape, calculate its vertex positions, colour, texture coords, and texture slot
+   index. Write them into a CPU-side array.
+
+3. **Upload Once Per Frame**: Use `glBufferSubData` to copy the packed CPU array into the GPU buffer in one go.
+
+4. **Issue a Single Draw Call**: Bind the Vertex Array Object (VAO) and call `glDrawArrays` or `glDrawElements`
+   once for the entire batch.
+   
+A very basic and bare-bones implementation might look like this:
+```c++
+// 1. Setup a dynamic VBO once during initialization
+GLuint vao, vbo;
+glGenVertexArrays(1, &vao);
+glGenBuffers(1, &vbo);
+
+glBindVertexArray(vao);
+glBindBuffer(GL_ARRAY_BUFFER, vbo);
+// Allocate max size buffer (e.g., 1000 sprites * 6 vertices * sizeof(Vertex))
+glBufferData(GL_ARRAY_BUFFER, maxBufferSize, nullptr, GL_DYNAMIC_DRAW);
+
+// Configure vertex attributes (position, texCoords, texIndex, etc.)
+// ... setup glVertexAttribPointer calls ...
+
+// 2. Inside your render loop / per frame:
+Vertex* bufferPtr = cpuVertexArray; // Fill this array with your shapes' vertices
+int vertexCount = populateSpriteBatch(cpuVertexArray); 
+
+glBindBuffer(GL_ARRAY_BUFFER, vbo);
+// Overwrite or update sub-region of the buffer
+glBufferSubData(GL_ARRAY_BUFFER, 0, vertexCount * sizeof(Vertex), cpuVertexArray);
+
+// 3. Single draw call for all packed shapes!
+glBindVertexArray(vao);
+glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+```
+
 TODO - Write mermaid diagram for Renderer refactor :) **THIS DOCUMENT IS NOT FINISHED**
 
 The camera is a big part of any game, 2D or 3D. And so below are 4 proposed APIs, with small game code snippets. The
@@ -57,7 +111,7 @@ Camera is being documented here as well, because how the renderer renders things
 is built and works.
 
 In each example, `player` and `boss` are existing game objects, and `renderer` is the `Renderer2D` render method. The 
-following code example is written in C++:
+following code examples are written in C++:
 
 1. Direct configuration on the camera
 ```c++

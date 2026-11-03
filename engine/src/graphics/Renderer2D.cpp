@@ -47,6 +47,9 @@ namespace forge
         initLine();
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     Renderer2D::~Renderer2D() = default;
@@ -55,9 +58,9 @@ namespace forge
     {
         // Vertex Data
         constexpr float vertices[] = {
-            -0.5f, -0.5f, 0.0f,
-             0.5f, -0.5f, 0.0f,
-             0.0f,  0.5f, 0.0f
+             0.0f,  1.0f, 0.0f, // bottom-left
+             1.0f,  1.0f, 0.0f, // bottom-right
+             0.5f,  0.0f, 0.0f  // top-middle
         };
 
         impl_->triangleVBO = internal::opengl::Buffer::createVertexBuffer(vertices, sizeof(vertices));

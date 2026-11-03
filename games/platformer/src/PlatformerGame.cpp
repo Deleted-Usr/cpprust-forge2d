@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-void PlatformerGame::onStart()
+void PlatformerGame::onStart(forge::AssetManager &assetManager)
 {
     std::cout << "Platformer Started!" << std::endl;
 }
