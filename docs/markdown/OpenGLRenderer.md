@@ -104,11 +104,81 @@ glBindVertexArray(vao);
 glDrawArrays(GL_TRIANGLES, 0, vertexCount);
 ```
 
-Obviously, this would be abstracted further, but that is what the raw OpenGL calls should look like. The Renderer would
-also be tightly integrated with the Engine Resource Manager, as the manager would hold the raw float arrays containing
-the vertex data (`constexpr float[] vertices { ... }`)
+Obviously this would be abstracted further, but that is what the raw OpenGL calls should look like. 
 
-TODO - Write mermaid diagram for Renderer refactor :) **THIS DOCUMENT IS NOT FINISHED**
+Each of the 5 sources above also define something along the lines of a vertex struct that hold position, colour, and
+texture coordinate positions, and an integer for a texture index. When vertices are submitted to the batcher, they're
+submitted as an instantiation of the vertex struct: `vertices_.push_back({ position, texCoords, textureIndex });`. For
+Forge2D however, colour coordinates will be discarded for now in favour of setting colours directly in the shape's
+fragment shader.
+
+They also pre-generate indices for the index buffer using a process along the lines of a large reserved `std::vector`,
+an integer for offset counting, and iterating through the vector to set indices.
+```c++
+std::vector<GLuint> indices(MAX_INDEX_COUNT);
+uint32_t offset = 0;
+for (size_t i = 0; i < MAX_INDEX_COUNT; i += 6)
+{
+    indices[i + 0] = offset + 0;
+    indices[i + 1] = offset + 1;
+    ...
+    
+    offset += 4;
+}
+```
+
+At the beginning of the frame, a `begin()` method gets called that clears the vertices array and resets the texture 
+slot index to 0. Then at the end of the frame, or when the vertex batch gets full, a `flush()` usually gets called in 
+where `GL_ARRAY_BUFFER` gets bound and `glDrawElements` gets called, drawing shapes and sprites to the display.
+
+That is the general gist of an OpenGL sprite batcher, though since Forge is likely to introduce Vulkan as a potential
+rendering backend, the batcher should be kept library agnostic, as to avoid directly needing OpenGL or Vulkan function
+calls and types. Then again, two implementations of sprite batching would most likely be easier to add and maintain
+across the two backends. Below is a proposed class (`.hpp` only) for the Shape Batching system. 
+
+This may be extremely different from what actually gets implemented in Forge.
+
+Proposed Class `.hpp` only (example):
+```c++
+namespace forge::internal
+{
+    struct Vertex
+    {
+        math::Vec2 position;
+        math::Vec2 texCoords;
+        float texIndex;
+    };
+    
+    class VertexBatcher
+    {
+        public:
+            VertexBatcher();
+            ~VertexBatcher() = default;
+        
+            void submitQuad();
+            void submitTriangle();
+            void submitCircle();
+            void submitLine();
+        
+        private:
+            void begin();
+            void flush();
+        
+            static const std::size_t MAX_VERTEX_COUNT;
+            static const std::size_t MAX_INDEX_COUNT;
+        
+            opengl::VertexArray VAO;
+            opengl::Buffer VBO;
+            opengl::Buffer EBO;
+    };
+}
+```
+
+Next up:
+- UBOs
+- projection hard coded to 800x600
+
+**THIS DOCUMENT IS NOT FINISHED**
 
 [Hazel - Renderer2D.cpp]: https://github.com/TheCherno/Hazel/blob/master/Hazel/src/Hazel/Renderer/Renderer2D.cpp
 [raylib — rlgl.h]: https://github.com/raysan5/raylib/blob/master/src/rlgl.h

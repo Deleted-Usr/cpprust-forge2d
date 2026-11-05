@@ -165,6 +165,8 @@ namespace forge
 
         impl_->spriteShader->bind();
 
+        // TODO - Texture will auto-generate a texture ID for use within sprite batching
+
         impl_->spriteShader->setMat4("uModel", transform.matrix());
         impl_->spriteShader->setMat4("uProjection", impl_->projection);
         impl_->spriteShader->setVec4("uTint", tint.toVec4());
