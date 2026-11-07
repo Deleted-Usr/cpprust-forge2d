@@ -4,9 +4,10 @@
 
 #include <forge2d/core/Game.hpp>
 #include <forge2d/core/Window.hpp>
-#include <forge2d/graphics/Renderer2D.hpp>
 
-#include "forge2d/assets/AssetManager.hpp"
+#include <forge2d/graphics/Renderer2D.hpp>
+#include <forge2d/assets/AssetManager.hpp>
+#include <forge2d/graphics/Camera2D.hpp>
 
 // TODO -
 //  A one shot method that can be called from anywhere in game code that executes once
@@ -36,6 +37,8 @@ namespace forge
             Window       window_;
             AssetManager assets_;
             Renderer2D   renderer_;
+
+            Camera2D     camera_;
 
             std::unique_ptr<Game> game_;
     };

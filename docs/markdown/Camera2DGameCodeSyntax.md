@@ -4,8 +4,10 @@
 
 The camera is a big part of any game, 2D or 3D. And so below are 4 proposed APIs, with small game code snippets. 
 
-In each example, `player` and `boss` are existing game objects, and `renderer` is the `Renderer2D` render method. The
-following code examples are written in C++:
+The plan for the camera is for it to be an instantiable class that the user can create in their main game loop. It will
+have built-in effects and be able to switch its follow target at runtime.
+
+In each example, `player` and `boss` are existing game objects. The following code examples are written in C++:
 
 1. Direct configuration on the camera
 ```c++
@@ -35,20 +37,14 @@ void update(float deltaTime) override
 
     cam.update(deltaTime);
 }
-
-void render() override 
-{
-    renderer.beginScene(cam);
-    drawWorld(renderer);
-    renderer.endScene();
-}
 ```
 
 2. Configuration structures
 ```c++
 forge::Camera2D cam;
 
-void onStart(forge::AssetManager& assetManager) override {
+void onStart(forge::AssetManager& assetManager) override 
+{
     forge::FollowSettings follow;
     follow.smoothingTime = 0.15f;
     follow.lookAhead = {80.0f, 0.0f};
@@ -107,13 +103,6 @@ void update(float deltaTime) override
 
     cameraController.update(deltaTime);
 }
-
-void render() override 
-{
-    renderer.beginScene(cam);
-    drawWorld(renderer);
-    renderer.endScene();
-}
 ```
 
 4. User-controlled movement with optional built-in effects
@@ -145,12 +134,5 @@ void update(float deltaTime) override
 
     // Advances effects while preserving the position set above.
     cam.update(deltaTime);
-}
-
-void render() override 
-{
-    renderer.beginScene(cam);
-    drawWorld(renderer);
-    renderer.endScene();
 }
 ```

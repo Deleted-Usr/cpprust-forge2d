@@ -1,5 +1,9 @@
 #include <opengl/buffer/Buffer.hpp>
 
+#include <opengl/GLConversions.hpp>
+
+#include "forge2d/debug/Assert.hpp"
+
 namespace forge::internal::opengl
 {
     Buffer::Buffer(BufferType type, const void* data, GLsizeiptr size, BufferUsage usage) : type_(type)
@@ -46,6 +50,13 @@ namespace forge::internal::opengl
         return { BufferType::ELEMENT_BUFFER, data, size, usage };
     }
 
+    Buffer Buffer::createDynamicBuffer(const BufferType type, const GLsizeiptr size)
+    {
+        Buffer buffer { type, nullptr, size, BufferUsage::DYNAMIC };
+        buffer.capacity_ = size;
+        return buffer;
+    }
+
     void Buffer::bind() const
     {
         glBindBuffer(openGLBufferType(type_), id_);
@@ -54,5 +65,18 @@ namespace forge::internal::opengl
     void Buffer::unbind() const
     {
         glBindBuffer(openGLBufferType(type_), 0);
+    }
+
+    void Buffer::bindBase(const GLuint bindingPoint) const
+    {
+        glBindBufferBase(openGLBufferType(type_), bindingPoint, id_);
+    }
+
+    void Buffer::updateDynamicBuffer(std::span<const std::byte> bytes, int offset)
+    {
+        FORGE_ASSERT(static_cast<GLsizeiptr>(bytes.size()) <= capacity_, "Buffer::update overflow");
+
+        glInvalidateBufferData(id_);
+        glNamedBufferSubData(id_, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(bytes.size()), bytes.data());
     }
 }

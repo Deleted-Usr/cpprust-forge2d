@@ -36,7 +36,7 @@ namespace forge
             game_->update(deltaTime);
 
             // Render
-            renderer_.beginFrame({
+            renderer_.beginFrame(window_.width(), window_.height(), {
                 0.08f,
                 0.08f,
                 0.10f,

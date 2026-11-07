@@ -3,8 +3,7 @@
 #include <string_view>
 #include <glad/gl.h>
 
-#include <opengl/buffer/BufferType.hpp>
-#include <opengl/buffer/BufferUsage.hpp>
+#include<opengl/buffer/Buffer.hpp>
 
 #include <forge2d/debug/Log.hpp>
 

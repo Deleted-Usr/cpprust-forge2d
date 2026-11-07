@@ -1,3 +1,5 @@
+#include <forge2d/graphics/Renderer2D.hpp>
+
 #include <ranges>
 
 #include <glad/gl.h>
@@ -7,7 +9,7 @@
 #include <opengl/buffer/Buffer.hpp>
 
 #include <forge2d/debug/Assert.hpp>
-#include <forge2d/graphics/Renderer2D.hpp>
+#include <forge2d/graphics/Camera2D.hpp>
 #include <forge2d/graphics/Texture2D.hpp>
 
 namespace forge
@@ -27,7 +29,8 @@ namespace forge
         internal::opengl::VertexArray lineVAO;
         internal::opengl::Buffer lineVBO;
 
-        math::Mat4 projection = math::Mat4::orthographic(0.0f, 800, 600, 0.0f);
+        math::Mat4 projection;
+        math::Vec2 viewportSize;
     };
 
     Renderer2D::Renderer2D(const std::filesystem::path& shaderDirectory) : impl_(std::make_unique<Impl>())
@@ -118,8 +121,10 @@ namespace forge
         impl_->lineVAO.addVertexBuffer(impl_->lineVBO, stride, layout);
     }
 
-    void Renderer2D::beginFrame(const Colour& clearColor)
+    void Renderer2D::beginFrame(float width, float height, const Colour& clearColor)
     {
+        impl_->projection = Camera2D{}.viewProjection({ width, height });
+
         glClearColor(
             clearColor.r,
             clearColor.g,
@@ -135,7 +140,12 @@ namespace forge
         // Nothing yet.
     }
 
-    void Renderer2D::drawTriangle(math::Transform2D transform, const Colour colour, bool fill) const
+    void Renderer2D::setCamera(const Camera2D& cam)
+    {
+        impl_->projection = cam.viewProjection(impl_->viewportSize);
+    }
+
+    void Renderer2D::drawTriangle(math::Transform2D transform, const Colour colour, bool fill)
     {
         impl_->shapeShader->bind();
 
@@ -147,7 +157,7 @@ namespace forge
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 
-    void Renderer2D::drawRect(math::Transform2D transform, const Colour colour, bool fill) const
+    void Renderer2D::drawRect(math::Transform2D transform, const Colour colour, bool fill)
     {
         impl_->shapeShader->bind();
 
@@ -159,7 +169,7 @@ namespace forge
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-    void Renderer2D::drawSprite(const Texture2D& texture, math::Transform2D transform, Colour tint) const
+    void Renderer2D::drawSprite(const Texture2D& texture, math::Transform2D transform, Colour tint)
     {
         if (!FORGE_ENSURE(texture.valid(), "drawSprite called with an empty Texture2D")) return;
 
@@ -181,7 +191,7 @@ namespace forge
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     }
 
-    void Renderer2D::drawLine(math::Vec2 from, math::Vec2 to, const Colour colour) const
+    void Renderer2D::drawLine(math::Vec2 from, math::Vec2 to, const Colour colour, float thickness)
     {
         const auto delta = to - from;
         if (delta.length() == 0.0f) return;
@@ -201,7 +211,7 @@ namespace forge
         glDrawArrays(GL_LINES, 0, 2);
     }
 
-    void Renderer2D::drawCircle(math::Vec2 center, float radius, const Colour colour, bool fill) const
+    void Renderer2D::drawCircle(math::Vec2 center, float radius, const Colour colour, bool fill)
     {
 
     }

@@ -247,7 +247,7 @@ glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, ubo);
 ```c++
 // Updating Data Dynamically (In the Render Loop)
 
-mat4 projectionMatrix = mat4::perspective(...)/;
+mat4 projectionMatrix = mat4::perspective(...);
 mat4 viewMatrix       = mat4::lookAt(...);
 
 glBindBuffer(GL_UNIFORM_BUFFER, ubo);
@@ -262,7 +262,7 @@ glBindBuffer(GL_UNIFORM_BUFFER, 0);
 ```
 
 The example above assumes a three-dimensional world space, but the general implementation shouldn't be very different 
-for a two-dimensional space.
+for a two-dimensional space. As well, it is not using OpenGL's Direct State Access, of which Forge uses.
 
 ### Hard-Coded Projection Matrix
 
