@@ -27,7 +27,7 @@ namespace forge::time
             Time reset();
 
         private:
-            long refNanos;
-            long stopNanos;
+            std::int64_t refNanos_;
+            std::int64_t stopNanos_;
     };
 }

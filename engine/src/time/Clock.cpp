@@ -1,34 +1,37 @@
 #include <forge2d/time/Clock.hpp>
 
-#include <GLFW/glfw3.h>
+#include <chrono>
 
 namespace forge::time
 {
-    Clock::Clock()
+    namespace
     {
-        refNanos  = glfwGetTime();
-        stopNanos = 0L;
+        std::int64_t nowNanos()
+        {
+            using namespace std::chrono;
+            return duration_cast<nanoseconds>(steady_clock::now().time_since_epoch()).count();
+        }
     }
+
+    Clock::Clock() : refNanos_(nowNanos()), stopNanos_(0) { }
 
     bool Clock::isRunning() const
     {
-        return stopNanos == 0L;
+        return stopNanos_ == 0;
     }
 
     Time Clock::getElapsedTime() const
     {
-        long end           = isRunning() ? glfwGetTime() : stopNanos;
-        long elapsedMicros = (end - refNanos) / 1000L;
-
-        return Time::microseconds(elapsedMicros);
+        const std::int64_t end = isRunning() ? nowNanos() : stopNanos_;
+        return Time::microseconds(static_cast<long>((end - refNanos_) / 1000));
     }
 
     void Clock::start()
     {
         if (!isRunning())
         {
-            refNanos += glfwGetTime() - stopNanos;
-            stopNanos = 0L;
+            refNanos_ += nowNanos() - stopNanos_;
+            stopNanos_ = 0;
         }
     }
 
@@ -36,27 +39,27 @@ namespace forge::time
     {
         if (isRunning())
         {
-            stopNanos = glfwGetTime();
+            stopNanos_ = nowNanos();
         }
     }
 
     Time Clock::restart()
     {
-        Time elapsed = getElapsedTime();
+        const Time elapsed = getElapsedTime();
 
-        refNanos  = glfwGetTime();
-        stopNanos = 0L;
+        refNanos_  = nowNanos();
+        stopNanos_ = 0;
 
         return elapsed;
     }
 
     Time Clock::reset()
     {
-        Time elapsed = getElapsedTime();
-        long now     = glfwGetTime();
+        const Time         elapsed = getElapsedTime();
+        const std::int64_t now     = nowNanos();
 
-        refNanos  = now;
-        stopNanos = now;
+        refNanos_  = now;
+        stopNanos_ = now;
 
         return elapsed;
     }
