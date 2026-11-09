@@ -21,8 +21,8 @@ namespace forge
         FORGE_CHECK(gladLoadGL(glfwGetProcAddress) != 0, "Failed to initialise GLAD");
 
         internal::opengl::logDriverInfo();
-        #ifdef FORGE_DEBUG
-            internal::opengl::enableDriverOutput();
+        #ifdef FORGE2D_DEBUG
+            internal::opengl::enableDebugOutput();
         #endif
 
         int width, height;

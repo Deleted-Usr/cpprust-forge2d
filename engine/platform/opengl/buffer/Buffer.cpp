@@ -12,9 +12,10 @@ namespace forge::internal::opengl
         glNamedBufferData(id_, size, data, openGLBufferUsage(usage));
     }
 
-    Buffer::Buffer(Buffer&& other) noexcept : id_(other.id_), type_(other.type_)
+    Buffer::Buffer(Buffer&& other) noexcept : id_(other.id_), type_(other.type_), capacity_(other.capacity_)
     {
         other.id_ = 0;
+        other.capacity_ = 0;
     }
 
     Buffer& Buffer::operator=(Buffer&& other) noexcept
@@ -25,8 +26,10 @@ namespace forge::internal::opengl
 
             type_ = other.type_;
             id_   = other.id_;
+            capacity_ = other.capacity_;
 
             other.id_ = 0;
+            other.capacity_ = 0;
         }
 
         return *this;
@@ -74,7 +77,8 @@ namespace forge::internal::opengl
 
     void Buffer::updateDynamicBuffer(std::span<const std::byte> bytes, int offset)
     {
-        FORGE_ASSERT(static_cast<GLsizeiptr>(bytes.size()) <= capacity_, "Buffer::update overflow");
+        FORGE_CHECK(offset >= 0 && static_cast<GLsizeiptr>(offset) <= capacity_ &&
+                    static_cast<GLsizeiptr>(bytes.size()) <= capacity_ - offset, "Buffer::update overflow");
 
         glInvalidateBufferData(id_);
         glNamedBufferSubData(id_, static_cast<GLintptr>(offset), static_cast<GLsizeiptr>(bytes.size()), bytes.data());

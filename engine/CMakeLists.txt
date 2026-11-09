@@ -11,6 +11,8 @@ add_library(
     src/core/Application.cpp
     src/core/Window.cpp
 
+    src/input/InputManager.cpp
+
     # --------------------------------------------------------
     # Math / Time
     # --------------------------------------------------------
@@ -27,6 +29,8 @@ add_library(
 
     src/graphics/Renderer2D.cpp
     src/graphics/Texture2D.cpp
+    src/graphics/Camera2D.cpp
+    src/graphics/internal/BatchBuilder2D.cpp
 
     # --------------------------------------------------------
     # Images
@@ -53,19 +57,14 @@ add_library(
     # --------------------------------------------------------
 
     platform/opengl/OpenGLContext.cpp
+    platform/opengl/OpenGLRenderer2D.cpp
     platform/opengl/OpenGLDebug.cpp
 
     platform/opengl/shaders/Shader.cpp
-    platform/opengl/textures/GLTexture.cpp
+    platform/opengl/textures/GPUTexture.cpp
+
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
-
-    # --------------------------------------------------------
-    # Vulkan
-    # --------------------------------------------------------
-
-    platform/vulkan/VulkanInstance.cpp
-    src/input/InputManager.cpp
 )
 
 # ============================================================

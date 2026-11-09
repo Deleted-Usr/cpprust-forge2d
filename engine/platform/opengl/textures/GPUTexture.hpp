@@ -10,14 +10,14 @@ namespace forge::internal
 {
     /// Owns one OpenGL texture object. Engine-internal: users only see Texture2D.
     /// Not copyable or movable; it is always held through a shared_ptr.
-    class GLTexture
+    class GPUTexture
     {
         public:
-            GLTexture(const Image& image, const TextureOptions& options);
-            ~GLTexture();
+            GPUTexture(const Image& image, const TextureOptions& options);
+            ~GPUTexture();
 
-            GLTexture(const GLTexture&) = delete;
-            GLTexture& operator=(const GLTexture&) = delete;
+            GPUTexture(const GPUTexture&) = delete;
+            GPUTexture& operator=(const GPUTexture&) = delete;
 
             void bind(unsigned int slot) const;
 

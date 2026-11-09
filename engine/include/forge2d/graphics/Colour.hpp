@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <forge2d/math/Vec4.hpp>
 
 namespace forge

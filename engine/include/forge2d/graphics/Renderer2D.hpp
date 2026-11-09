@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <forge2d/graphics/Colour.hpp>
+#include <forge2d/graphics/FrameInfo.hpp>
 
 #include <forge2d/math/Vec2.hpp>
 #include <forge2d/math/Transform2D.hpp>
@@ -23,10 +24,13 @@ namespace forge
             Renderer2D(const Renderer2D&) = delete;
             Renderer2D& operator=(const Renderer2D&) = delete;
 
-            void beginFrame(float width, float height, const Colour& clearColour);
+            /// Starts in screen coordinates: top-left origin, +Y down. Called by Application.
+            void beginFrame(const FrameInfo& frame, const Colour& clearColour);
             void endFrame();
 
             void setCamera(const Camera2D& cam);
+            /// Flushes previous drawing and restores screen coordinates for HUD/UI.
+            void resetCamera();
 
             void drawTriangle (math::Transform2D transform,     Colour colour, bool fill = true);
             void drawRect     (math::Transform2D transform,     Colour colour, bool fill = true);
@@ -39,8 +43,5 @@ namespace forge
             struct Impl;
             std::unique_ptr<Impl> impl_;
 
-            void initTriangle();
-            void initQuad();
-            void initLine();
     };
 }

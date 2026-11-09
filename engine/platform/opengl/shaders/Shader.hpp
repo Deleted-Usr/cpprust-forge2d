@@ -2,6 +2,8 @@
 
 #include <filesystem>
 #include <string>
+#include <string_view>
+#include <unordered_map>
 
 #include <forge2d/graphics/Colour.hpp>
 
@@ -33,6 +35,8 @@ namespace forge::internal::opengl
 
         private:
             unsigned int program_ = 0;
+            mutable std::unordered_map<std::string, int> uniformLocations_;
+            int uniformLocation(std::string_view name) const;
 
             static std::string readFile(const std::filesystem::path& path);
 

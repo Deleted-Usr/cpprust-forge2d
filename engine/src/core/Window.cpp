@@ -15,7 +15,7 @@ namespace
 
 namespace forge
 {
-    Window::Window(const WindowConfig& config) : width_(config.width), height_(config.height)
+    Window::Window(const WindowConfig& config)
     {
         if (glfwWindowCount == 0)
         {
@@ -99,12 +99,32 @@ namespace forge
 
     int Window::width() const
     {
-        return width_;
+        int width, height;
+        glfwGetWindowSize(handle_, &width, &height);
+
+        return width;
     }
 
     int Window::height() const
     {
-        return height_;
+        int width, height;
+        glfwGetWindowSize(handle_, &width, &height);
+
+        return height;
+    }
+
+    FrameInfo Window::frameInfo() const
+    {
+        int width, height, framebufferWidth, framebufferHeight;
+
+        glfwGetWindowSize(handle_, &width, &height);
+        glfwGetFramebufferSize(handle_, &framebufferWidth, &framebufferHeight);
+
+        return {
+            { static_cast<float>(width), static_cast<float>(height) },
+            framebufferWidth,
+            framebufferHeight
+        };
     }
 
     GLFWwindow* Window::nativeHandle() const

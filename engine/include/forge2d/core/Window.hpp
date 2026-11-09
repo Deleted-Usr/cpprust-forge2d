@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <forge2d/graphics/FrameInfo.hpp>
 
 struct GLFWwindow;
 
@@ -43,6 +44,9 @@ namespace forge
             [[nodiscard]]
             int height() const;
 
+            /// Queries current logical and physical sizes, including after resize.
+            [[nodiscard]] FrameInfo frameInfo() const;
+
             // Engine/platform code may need this.
             // Gameplay generally should not.
             [[nodiscard]]
@@ -53,7 +57,5 @@ namespace forge
 
             std::unique_ptr<OpenGLContext> context_;
 
-            int width_;
-            int height_;
     };
 }

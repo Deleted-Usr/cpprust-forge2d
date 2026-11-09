@@ -8,7 +8,8 @@ namespace forge
 
     namespace internal
     {
-        class GLTexture;
+        class GPUTexture;
+        struct TextureAccess;
     }
 
     enum class TextureFilter { NEAREST, LINEAR };
@@ -49,13 +50,11 @@ namespace forge
             /// True if both handles refer to the same GPU texture.
             friend bool operator==(const Texture2D&, const Texture2D&) = default;
 
-            /// Engine internal (used by Renderer2D).
-            void bind(unsigned int slot) const;
-
         private:
-            Texture2D(std::shared_ptr<const internal::GLTexture> gpu, int width, int height) noexcept;
+            friend struct internal::TextureAccess;
+            Texture2D(std::shared_ptr<const internal::GPUTexture> gpu, int width, int height) noexcept;
 
-            std::shared_ptr<const internal::GLTexture> gpu_;
+            std::shared_ptr<const internal::GPUTexture> gpu_;
 
             int width_  = 0;
             int height_ = 0;

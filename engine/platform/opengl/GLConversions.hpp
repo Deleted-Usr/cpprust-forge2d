@@ -1,11 +1,13 @@
 #pragma once
 
 #include <string_view>
+
 #include <glad/gl.h>
 
-#include<opengl/buffer/Buffer.hpp>
+#include <opengl/buffer/Buffer.hpp>
 
 #include <forge2d/debug/Log.hpp>
+#include <forge2d/graphics/Texture2D.hpp>
 
 namespace forge::internal::opengl
 {
@@ -78,6 +80,30 @@ namespace forge::internal::opengl
         }
     }
 
+    GLint toGL(const TextureWrap wrap)
+    {
+        switch (wrap)
+        {
+            case TextureWrap::CLAMP:  return GL_CLAMP_TO_EDGE;
+            case TextureWrap::REPEAT: return GL_REPEAT;
+            case TextureWrap::MIRROR: return GL_MIRRORED_REPEAT;
+        }
+
+        return GL_CLAMP_TO_EDGE;
+    }
+
+    GLint minFilter(const TextureOptions& options)
+    {
+        const bool nearest = options.filter == TextureFilter::NEAREST;
+
+        if (!options.mipmaps)
+        {
+            return nearest ? GL_NEAREST : GL_LINEAR;
+        }
+
+        return nearest ? GL_NEAREST_MIPMAP_NEAREST : GL_LINEAR_MIPMAP_LINEAR;
+    }
+
     inline void GLAD_API_PTR onDebugMessage(
         const GLenum source,
         const GLenum type,
@@ -85,7 +111,8 @@ namespace forge::internal::opengl
         const GLenum severity,
         const GLsizei length,
         const GLchar* message,
-        const void* /*userParam*/)
+        const void* /*userParam*/
+    )
     {
         const log::Level level = toLogLevel(type, severity);
 
