@@ -1,30 +1,70 @@
-#include <forge2d/core/Application.hpp>
-
 #include <exception>
 #include <iostream>
 #include <memory>
 
+#include <forge2d/core/Application.hpp>
+#include <forge2d/debug/Log.hpp>
+
 namespace
 {
+    struct Player
+    {
+        float x = 300.f, y = 200.f;
+
+        void update(float deltaTime)
+        {
+            x += 1;
+        }
+
+        void render(forge::Renderer2D& renderer)
+        {
+            renderer.drawRect(
+                forge::math::Transform2D {
+                    .position = { x, y },
+                    .scale    = { 100.0f, 100.0f }
+                },
+                forge::colours::Green
+            );
+        }
+
+        [[nodiscard]]
+        forge::math::Vec2 position() const
+        {
+            return { x, y };
+        }
+    };
+
     class SandboxGame final : public forge::Game
     {
         public:
             float x = 0, y = 0;
             const forge::Texture2D* heart{};
 
+            forge::Camera2D camera;
+            Player player;
+
             void onStart(forge::AssetManager& assetManager) override
             {
                 heart = &assetManager.loadTexture("heart16x16.png");
+
+                camera.follow(player);
             }
 
             void update(float deltaTime) override
             {
-                x += deltaTime;
+                player.update(deltaTime);
+                camera.update(deltaTime);
             }
 
             void render(forge::Renderer2D& renderer) override
             {
-                if (bool drawRect = false)
+                if (bool useCamera = false)
+                {
+                    renderer.setCamera(camera);
+                }
+                player.render(renderer);
+
+                if (bool drawRect = true)
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
@@ -79,7 +119,7 @@ int main()
     }
     catch (const std::exception& e)
     {
-        std::cerr << "Fatal Error: " << e.what() << '\n';
+        FORGE_LOG_FATAL("Fatal Error: {}", e.what());
         return 1;
     }
 }
