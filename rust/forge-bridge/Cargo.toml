@@ -1,0 +1,12 @@
+[package]
+name = "forge-bridge"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+forge-assets.workspace = true
+cxx.workspace = true

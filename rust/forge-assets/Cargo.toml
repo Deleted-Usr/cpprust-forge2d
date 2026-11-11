@@ -1,0 +1,8 @@
+[package]
+name = "forge-assets"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+
+[dependencies]
+image.workspace = true

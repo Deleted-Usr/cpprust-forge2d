@@ -80,7 +80,7 @@ namespace forge::internal::opengl
         }
     }
 
-    GLint toGL(const TextureWrap wrap)
+    inline GLint toGL(const TextureWrap wrap)
     {
         switch (wrap)
         {
@@ -92,7 +92,7 @@ namespace forge::internal::opengl
         return GL_CLAMP_TO_EDGE;
     }
 
-    GLint minFilter(const TextureOptions& options)
+    inline GLint minFilter(const TextureOptions& options)
     {
         const bool nearest = options.filter == TextureFilter::NEAREST;
 

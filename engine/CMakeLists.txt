@@ -36,7 +36,6 @@ add_library(
     # Images
     # --------------------------------------------------------
 
-    platform/stb/stb_image.cpp
     src/assets/Image.cpp
 
     # --------------------------------------------------------
@@ -126,6 +125,7 @@ target_link_libraries(
     PRIVATE
         glfw
         glad::glad
+        forge2d::rust
 )
 
 # ============================================================

@@ -1,71 +1,79 @@
 #include <forge2d/assets/Image.hpp>
 #include <forge2d/assets/AssetError.hpp>
 
-#include <climits>
+#include <forge2d_rust_bridge/assets.h>
+#include <rust/cxx.h>
+
 #include <fstream>
 #include <iterator>
-#include <memory>
-
-// Declarations only. The implementation is compiled once, in stb_image.cpp.
-#include <stb/stb_image.h>
+#include <limits>
 
 namespace forge
 {
     namespace
     {
-        std::vector<stbi_uc> readBytes(const std::filesystem::path& path)
+        std::vector<std::uint8_t> readBytes(const std::filesystem::path& path)
         {
             std::ifstream file(path, std::ios::binary);
 
             if (!file)
             {
-                throw AssetError("Could not open file!");
+                throw AssetError("Could not open image file");
             }
 
-            return { std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
-        }
+            std::vector<std::uint8_t> bytes{
+                std::istreambuf_iterator(file),
+                std::istreambuf_iterator<char>()
+            };
 
-        struct StbiDeleter
-        {
-            void operator()(stbi_uc* data) const noexcept { stbi_image_free(data); }
-        };
+            if (file.bad())
+            {
+                throw AssetError("Could not read image file");
+            }
+
+            return bytes;
+        }
     }
 
     Image Image::load(const std::filesystem::path& path)
     {
-        // Reading the file manually (instead of stbi_load(path.c_str())) handles
-        // non-ASCII Windows paths, and is the hook point for a future VFS/pak reader.
-        const std::vector<stbi_uc> bytes = readBytes(path);
+        const auto bytes = readBytes(path);
 
-        if (bytes.size() > static_cast<std::size_t>(INT_MAX))
+        try
         {
-            throw AssetError("File is too large!");
-        }
+            // Leading :: selects CXX's namespace, rather than forge::rust.
+            const auto decoded = forge::rust::decode_image(
+                ::rust::Slice<const std::uint8_t>(
+                    bytes.data(), bytes.size())
+            );
 
-        int width = 0, height = 0, channels = 0;
+            constexpr auto maxDimension =static_cast<std::uint32_t>(std::numeric_limits<int>::max());
 
-        // Always ask for 4 channels so every texture is uniformly RGBA8
-        const std::unique_ptr<stbi_uc, StbiDeleter> data(
-            stbi_load_from_memory(
-                bytes.data(),
-                static_cast<int>(bytes.size()),
-                &width,
-                &height,
-                &channels,
-                STBI_rgb_alpha
+            if (
+                decoded.width  == 0           ||
+                decoded.height == 0           ||
+                decoded.width  > maxDimension ||
+                decoded.height > maxDimension
             )
-        );
+            {
+                throw AssetError("Image dimensions are out of range");
+            }
 
-        if (!data)
-        {
-            throw AssetError(stbi_failure_reason());
+            Image image;
+            image.width  = static_cast<int>(decoded.width);
+            image.height = static_cast<int>(decoded.height);
+
+            image.pixels.assign(
+                decoded.pixels.begin(),
+                decoded.pixels.end()
+            );
+
+            return image;
         }
-
-        Image image;
-        image.width  = width;
-        image.height = height;
-        image.pixels.assign(data.get(), data.get() + static_cast<std::size_t>(width * height * 4));
-
-        return image;
+        catch (const ::rust::Error& error)
+        {
+            // Preserve AssetManager's existing fallback behavior.
+            throw AssetError(error.what());
+        }
     }
 }

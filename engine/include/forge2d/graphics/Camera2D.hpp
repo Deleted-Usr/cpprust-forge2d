@@ -22,11 +22,11 @@ namespace forge
     {
         public:
             // ---- Configuration ------------------------------------------------
-            void setPosition(math::Vec2 position); // jumps immediately; overridden next update() while following
-            void setZoom(float zoom);              // > 0. 2 = everything drawn twice as big
-            void setRotation(float radians);
-            void setSmoothing(float seconds);      // time constant; 0 = rigidly locked to the target
-            void setLookAhead(math::Vec2 offset);  // x flips with the target's horizontal facing, y is the constant
+            void setPosition  (math::Vec2 position); // jumps immediately; overridden next update() while following
+            void setZoom      (float zoom);          // > 0. 2 = everything drawn twice as big
+            void setRotation  (float radians);
+            void setSmoothing (float seconds);       // time constant; 0 = rigidly locked to the target
+            void setLookAhead (math::Vec2 offset);   // x flips with the target's horizontal facing, y is the constant
 
             // ---- Following ----------------------------------------------------
             /// Follows `target` BY REFERENCE: it must outlive the follow

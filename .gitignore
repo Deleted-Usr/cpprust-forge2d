@@ -3,6 +3,9 @@ build/
 build-*/
 cmake-build-*/
 
+# Rust
+target/
+
 # Compiled objects/libraries
 *.o
 *.obj

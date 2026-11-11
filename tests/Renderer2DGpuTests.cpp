@@ -6,6 +6,7 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <forge2d/assets/Image.hpp>
+#include <forge2d/assets/AssetManager.hpp>
 #include <forge2d/graphics/Camera2D.hpp>
 #include <forge2d/graphics/Renderer2D.hpp>
 #include <forge2d/graphics/Texture2D.hpp>
@@ -39,6 +40,27 @@ void run(const char* preview)
     const FrameInfo frame{ { Size, Size }, Size, Size };
 
     auto begin = [&] { renderer.beginFrame(frame, colours::Black); };
+
+    // Load through the Rust decoder and the real asset cache, then verify upload
+    // and sprite orientation using framebuffer pixels in a hidden GL window.
+    AssetManager assets(FORGE2D_IMAGE_FIXTURE_DIR);
+    const auto decoded = assets.loadTexture("rgba.png");
+    check(decoded.width() == 2 && decoded.height() == 2, "decoded texture dimensions");
+    check(assets.loadTexture("rgba.png") == decoded, "decoded texture cache hit");
+    check(assets.loadTexture("missing.png") == assets.missingTexture(), "missing texture fallback");
+    check(assets.loadTexture("gray.png") != assets.missingTexture(), "grayscale texture load");
+    const std::vector<std::string> preload{"rgba.png", "red.jpg", "absent.png"};
+    assets.preloadTextures(preload);
+    check(assets.loadTexture("red.jpg").width() == 16, "preloaded JPEG texture");
+    check(assets.loadTexture("absent.png") == assets.missingTexture(), "preload failure fallback");
+
+    begin();
+    renderer.drawSprite(decoded, rect(0, 0, 32, 32));
+    renderer.endFrame();
+    pixel(8, 8, {255, 0, 0}, "decoded PNG top-left red");
+    pixel(24, 8, {0, 64, 0}, "decoded PNG top-right alpha");
+    pixel(8, 24, {0, 0, 0}, "decoded PNG bottom-left transparent");
+    pixel(24, 24, {255, 255, 255}, "decoded PNG bottom-right white");
 
     auto blue = Texture2D::create(Image{ 1, 1, { 0, 0, 255, 255 } });
 
