@@ -18,17 +18,18 @@ namespace forge::internal::opengl
 {
     OpenGLRenderer2D::OpenGLRenderer2D(const std::filesystem::path& shaderDirectory)
     :
-      #ifdef FORGE2D_EMBED_BATCH_SHADERS
-            shader_ (
-                Shader::Source{embedded::BatchVertex, "batch.vert.glsl (embedded)"},
-                Shader::Source{embedded::BatchFragment, "batch.frag.glsl (embedded)"}
-            ),
-      #else
-            shader_ (shaderDirectory / "batch.vert.glsl", shaderDirectory / "batch.frag.glsl"),
-      #endif
-      vertexBuffer_ (Buffer::createDynamicBuffer(BufferType::ARRAY_BUFFER,   MaxVertices * sizeof(Vertex2D))),
-      indexBuffer_  (Buffer::createDynamicBuffer(BufferType::ELEMENT_BUFFER, MaxIndices * sizeof(std::uint32_t))),
-      whiteTexture_ (std::make_shared<const GPUTexture>(Image{ 1, 1, { 255, 255, 255, 255 } }, TextureOptions{}))
+    #ifdef FORGE2D_EMBED_BATCH_SHADERS
+          shader_ (
+              Shader::Source{embedded::BatchVertex, "batch.vert.glsl (embedded)"},
+              Shader::Source{embedded::BatchFragment, "batch.frag.glsl (embedded)"}
+          ),
+    #else
+          shader_ (shaderDirectory / "batch.vert.glsl", shaderDirectory / "batch.frag.glsl"),
+    #endif
+    vertexBuffer_ (Buffer::createDynamicBuffer(BufferType::ARRAY_BUFFER,   MaxVertices * sizeof(Vertex2D))),
+    indexBuffer_  (Buffer::createDynamicBuffer(BufferType::ELEMENT_BUFFER, MaxIndices  * sizeof(std::uint32_t))),
+    viewBuffer_   (Buffer::createDynamicBuffer(BufferType::UNIFORM_BUFFER, 16          * sizeof(float))),
+    whiteTexture_ (std::make_shared<const GPUTexture>(Image{ 1, 1, { 255, 255, 255, 255 } }, TextureOptions{}))
     {
         #ifdef FORGE2D_EMBED_BATCH_SHADERS
                 (void)shaderDirectory;
@@ -91,8 +92,11 @@ namespace forge::internal::opengl
         vertexBuffer_.updateDynamicBuffer(std::as_bytes(std::span(batch.vertices)));
         indexBuffer_.updateDynamicBuffer(std::as_bytes(std::span(batch.indices)));
 
+        const auto matrix = std::span(view.viewProjection.data(), math::Mat4::SIZE);
+        viewBuffer_.updateDynamicBuffer(std::as_bytes(std::span(matrix)));
+        viewBuffer_.bindBase(viewBinding);
+
         shader_.bind();
-        shader_.setMat4("uViewProjection", view.viewProjection);
 
         for (std::size_t i = 0; i < batch.textures.size(); ++i)
         {

@@ -25,7 +25,7 @@ namespace forge::internal::opengl
 
             explicit OpenGLRenderer2D(const std::filesystem::path& shaderDirectory);
 
-            void beginFrame (int framebufferWidth, int framebufferHeight, Colour clearColour);
+            void beginFrame (int framebufferWidth,       int framebufferHeight, Colour clearColour);
             void submit     (const RenderBatch2D& batch, const RenderView2D& view);
             void endFrame   ();
 
@@ -33,9 +33,15 @@ namespace forge::internal::opengl
 
         private:
             Shader shader_;
+
             Buffer vertexBuffer_;
             Buffer indexBuffer_;
+
             VertexArray vertexArray_;
+
+            static constexpr GLuint viewBinding  = 0;
+            Buffer viewBuffer_;
+
             std::shared_ptr<const GPUTexture> whiteTexture_;
     };
 }

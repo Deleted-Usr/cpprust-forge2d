@@ -17,6 +17,7 @@ namespace forge::internal::opengl
         {
             case BufferType::ARRAY_BUFFER:   return GL_ARRAY_BUFFER;
             case BufferType::ELEMENT_BUFFER: return GL_ELEMENT_ARRAY_BUFFER;
+            case BufferType::UNIFORM_BUFFER: return GL_UNIFORM_BUFFER;
         }
 
         return GL_NONE;

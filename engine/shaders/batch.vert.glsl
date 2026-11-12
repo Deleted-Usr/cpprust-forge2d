@@ -1,11 +1,14 @@
 #version 450 core
 
-layout(location = 0) in vec2 aPosition;
-layout(location = 1) in vec2 aUV;
-layout(location = 2) in vec4 aColour;
+layout(location = 0) in vec2  aPosition;
+layout(location = 1) in vec2  aUV;
+layout(location = 2) in vec4  aColour;
 layout(location = 3) in float aTextureSlot;
 
-uniform mat4 uViewProjection;
+layout(std140, binding = 0) uniform ViewData
+{
+    mat4 uViewProjection;
+};
 
 out vec2 vUV;
 out vec4 vColour;
