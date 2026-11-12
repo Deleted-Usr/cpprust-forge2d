@@ -1,0 +1,8 @@
+#pragma once
+
+// Generated from engine/shaders; edit the GLSL files, not this header.
+namespace forge::internal::opengl::embedded
+{
+    inline constexpr char BatchVertex[] = R"FORGE2D_GLSL(@FORGE2D_BATCH_VERTEX@)FORGE2D_GLSL";
+    inline constexpr char BatchFragment[] = R"FORGE2D_GLSL(@FORGE2D_BATCH_FRAGMENT@)FORGE2D_GLSL";
+}

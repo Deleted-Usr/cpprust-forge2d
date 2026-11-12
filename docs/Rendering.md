@@ -141,5 +141,13 @@ texture lifetimes, primitives, logical scaling, zero-size frames, and uploads.
 The GPU test returns skip code 77 when no compatible context can be created.
 
 Pass an output `.ppm` path to `forge2d-renderer-gpu-tests` to save a rendered
-primitive/texture preview. Shader paths for that test are supplied by CMake;
-application executables continue to load their copied `shaders` directory.
+primitive/texture preview. Debug loads the batch GLSL files from the shader
+directory, which is copied beside application executables. All other build
+configurations (including Release, RelWithDebInfo and MinSizeRel) compile embedded
+batch shader sources into the engine and ignore the renderer's shader directory.
+No shader folder is needed when distributing those builds.
+
+CMake generates the embedded header from `engine/shaders/batch.vert.glsl` and
+`batch.frag.glsl`; editing either file regenerates it on the next build. The GLSL
+is still compiled and linked by the OpenGL driver at runtime. Release GPU tests
+use an invalid shader directory to verify rendering without external shader files.

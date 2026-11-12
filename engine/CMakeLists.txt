@@ -67,6 +67,28 @@ add_library(
 )
 
 # ============================================================
+# Embedded Shaders
+# ============================================================
+
+# Keep the GLSL files as the single source of truth. Editing either file
+# triggers reconfiguration and regeneration on the next build.
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/batch.vert.glsl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/batch.frag.glsl"
+)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/shaders/batch.vert.glsl" FORGE2D_BATCH_VERTEX)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/shaders/batch.frag.glsl" FORGE2D_BATCH_FRAGMENT)
+configure_file(
+    platform/opengl/shaders/BatchShaders.hpp.in
+    "${CMAKE_CURRENT_BINARY_DIR}/generated/BatchShaders.hpp"
+    @ONLY
+)
+target_include_directories(forge2d PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/generated")
+target_compile_definitions(forge2d PRIVATE
+    $<$<NOT:$<CONFIG:Debug>>:FORGE2D_EMBED_BATCH_SHADERS>
+)
+
+# ============================================================
 # Public headers
 # ============================================================
 

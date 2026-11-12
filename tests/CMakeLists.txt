@@ -39,6 +39,7 @@ target_compile_definitions(
     forge2d-renderer-gpu-tests PRIVATE
 
     FORGE2D_TEST_SHADER_DIR="${PROJECT_SOURCE_DIR}/engine/shaders"
+    $<$<NOT:$<CONFIG:Debug>>:FORGE2D_TEST_EMBEDDED_SHADERS>
     FORGE2D_IMAGE_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures/images"
 )
 

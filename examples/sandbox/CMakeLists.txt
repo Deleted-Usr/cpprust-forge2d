@@ -22,7 +22,9 @@ add_custom_command(
     POST_BUILD
 
     COMMAND
-        ${CMAKE_COMMAND} -E copy_directory
-        "${PROJECT_SOURCE_DIR}/engine/shaders"
-        "$<TARGET_FILE_DIR:forge2d-sandbox>/shaders"
+        ${CMAKE_COMMAND}
+        "-DCONFIG=$<CONFIG>"
+        "-DSOURCE=${PROJECT_SOURCE_DIR}/engine/shaders"
+        "-DDESTINATION=$<TARGET_FILE_DIR:forge2d-sandbox>/shaders"
+        -P "${PROJECT_SOURCE_DIR}/cmake/copy-debug-shaders.cmake"
 )

@@ -17,6 +17,7 @@ namespace forge
     class Renderer2D
     {
         public:
+            /// Debug loads GLSL from this directory; other builds use embedded batch shaders.
             explicit Renderer2D(const std::filesystem::path& shaderDirectory);
 
             ~Renderer2D();

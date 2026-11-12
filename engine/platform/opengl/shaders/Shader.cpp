@@ -26,12 +26,13 @@ namespace forge::internal::opengl
         return stream.str();
     }
 
-    unsigned int Shader::compile(unsigned int type, const std::string& source, const std::filesystem::path& path)
+    unsigned int Shader::compile(unsigned int type, Source source)
     {
         const unsigned int shader = glCreateShader(type);
-        const char* sourcePointer = source.c_str();
+        const char* sourcePointer = source.code.data();
+        const auto sourceLength = static_cast<GLint>(source.code.size());
 
-        glShaderSource(shader,1,&sourcePointer,nullptr);
+        glShaderSource(shader, 1, &sourcePointer, &sourceLength);
         glCompileShader(shader);
 
         int success = 0;
@@ -49,7 +50,7 @@ namespace forge::internal::opengl
 
             throw std::runtime_error(
                 "Failed to compile shader "
-                + path.string()
+                + std::string(source.name)
                 + ":\n"
                 + std::string(log.data())
             );
@@ -59,17 +60,20 @@ namespace forge::internal::opengl
     }
 
     Shader::Shader(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath)
-    {
-        const std::string vertexSource   = readFile(vertexPath);
-        const std::string fragmentSource = readFile(fragmentPath);
+    : Shader(
+        Source{ readFile(vertexPath), vertexPath.string() },
+        Source{ readFile(fragmentPath), fragmentPath.string() }
+    ) { }
 
+    Shader::Shader(Source vertex, Source fragment)
+    {
         unsigned int vertexShader   = 0;
         unsigned int fragmentShader = 0;
 
         try
         {
-            vertexShader   = compile(GL_VERTEX_SHADER,   vertexSource,   vertexPath);
-            fragmentShader = compile(GL_FRAGMENT_SHADER, fragmentSource, fragmentPath);
+            vertexShader   = compile(GL_VERTEX_SHADER,   vertex);
+            fragmentShader = compile(GL_FRAGMENT_SHADER, fragment);
 
             program_ = glCreateProgram();
 

@@ -15,6 +15,14 @@ namespace forge::internal::opengl
     class Shader
     {
         public:
+            struct Source
+            {
+                std::string_view code;
+                std::string_view name;
+            };
+
+            Shader(Source vertex, Source fragment);
+
             Shader(
                 const std::filesystem::path& vertexPath,
                 const std::filesystem::path& fragmentPath
@@ -42,8 +50,7 @@ namespace forge::internal::opengl
 
             static unsigned int compile(
                 unsigned int type,
-                const std::string& source,
-                const std::filesystem::path& path
+                Source source
             );
     };
 }

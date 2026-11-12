@@ -10,14 +10,29 @@
 #include <graphics/internal/RenderView2D.hpp>
 #include <opengl/textures/GPUTexture.hpp>
 
+#ifdef FORGE2D_EMBED_BATCH_SHADERS
+#include <BatchShaders.hpp>
+#endif
+
 namespace forge::internal::opengl
 {
     OpenGLRenderer2D::OpenGLRenderer2D(const std::filesystem::path& shaderDirectory)
-    : shader_       (shaderDirectory / "batch.vert.glsl", shaderDirectory / "batch.frag.glsl"),
+    :
+      #ifdef FORGE2D_EMBED_BATCH_SHADERS
+            shader_ (
+                Shader::Source{embedded::BatchVertex, "batch.vert.glsl (embedded)"},
+                Shader::Source{embedded::BatchFragment, "batch.frag.glsl (embedded)"}
+            ),
+      #else
+            shader_ (shaderDirectory / "batch.vert.glsl", shaderDirectory / "batch.frag.glsl"),
+      #endif
       vertexBuffer_ (Buffer::createDynamicBuffer(BufferType::ARRAY_BUFFER,   MaxVertices * sizeof(Vertex2D))),
       indexBuffer_  (Buffer::createDynamicBuffer(BufferType::ELEMENT_BUFFER, MaxIndices * sizeof(std::uint32_t))),
       whiteTexture_ (std::make_shared<const GPUTexture>(Image{ 1, 1, { 255, 255, 255, 255 } }, TextureOptions{}))
     {
+        #ifdef FORGE2D_EMBED_BATCH_SHADERS
+                (void)shaderDirectory;
+        #endif
         static_assert(std::is_standard_layout_v<Vertex2D>);
 
         vertexArray_.addVertexBuffer(vertexBuffer_, sizeof(Vertex2D), {

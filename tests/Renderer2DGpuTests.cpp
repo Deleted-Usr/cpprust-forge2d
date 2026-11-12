@@ -36,7 +36,12 @@ void pixel(int x, int y, std::array<int, 3> expected, const std::string& label)
 
 void run(const char* preview)
 {
+#ifdef FORGE2D_TEST_EMBEDDED_SHADERS
+    // An invalid directory proves that release rendering needs no shader files.
+    Renderer2D renderer("unused-embedded-shader-directory");
+#else
     Renderer2D renderer(FORGE2D_TEST_SHADER_DIR);
+#endif
     const FrameInfo frame{ { Size, Size }, Size, Size };
 
     auto begin = [&] { renderer.beginFrame(frame, colours::Black); };
