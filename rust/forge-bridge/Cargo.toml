@@ -8,5 +8,7 @@ publish.workspace = true
 crate-type = ["staticlib"]
 
 [dependencies]
-forge-assets.workspace = true
 cxx.workspace = true
+
+forge-assets = { path = "../forge-assets" }
+forge-audio  = { path = "../forge-audio"  }

@@ -11,7 +11,4 @@ edition = "2024"
 publish = false
 
 [workspace.dependencies]
-forge-assets = { path = "rust/forge-assets" }
-
-image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
 cxx   = "1"

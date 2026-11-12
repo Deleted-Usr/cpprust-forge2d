@@ -33,10 +33,10 @@ corrosion_import_crate(
 # Generate and compile the C++ side of the CXX bridge.
 # FILES paths are relative to forge-bridge/src/.
 corrosion_add_cxxbridge(
-    forge2d_rust_bridge
+    forge2d_rust
     CRATE forge_bridge
     FILES assets.rs
 )
 
 # Give engine code one stable CMake target to link against.
-add_library(forge2d::rust ALIAS forge2d_rust_bridge)
+add_library(forge2d::rust ALIAS forge2d_rust)

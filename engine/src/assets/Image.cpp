@@ -1,8 +1,8 @@
 #include <forge2d/assets/Image.hpp>
 #include <forge2d/assets/AssetError.hpp>
 
-#include <forge2d_rust_bridge/assets.h>
 #include <rust/cxx.h>
+#include <forge2d_rust/assets.h>
 
 #include <fstream>
 #include <iterator>
@@ -42,9 +42,8 @@ namespace forge
         try
         {
             // Leading :: selects CXX's namespace, rather than forge::rust.
-            const auto decoded = forge::rust::decode_image(
-                ::rust::Slice<const std::uint8_t>(
-                    bytes.data(), bytes.size())
+            const auto decoded = rust::decode_image(
+                ::rust::Slice(bytes.data(), bytes.size())
             );
 
             constexpr auto maxDimension =static_cast<std::uint32_t>(std::numeric_limits<int>::max());

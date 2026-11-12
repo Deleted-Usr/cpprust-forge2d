@@ -5,4 +5,12 @@ edition.workspace = true
 publish.workspace = true
 
 [dependencies]
-image.workspace = true
+image = { 
+    version = "0.25", 
+    default-features = false, 
+    
+    features = [
+        "png", 
+        "jpeg"
+    ] 
+}

@@ -11,9 +11,7 @@ mod ffi {
     }
 }
 
-fn decode_image(
-    bytes: &[u8],
-) -> Result<ffi::DecodedImage, forge_assets::ImageError> {
+fn decode_image(bytes: &[u8]) -> Result<ffi::DecodedImage, forge_assets::ImageError> {
     let image = forge_assets::decode_image(bytes)?;
 
     Ok(ffi::DecodedImage {
