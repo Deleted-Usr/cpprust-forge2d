@@ -68,7 +68,7 @@ namespace
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
-                            .position = { 15.0f, 15.0f },
+                            .position = { 15.0f,  15.0f  },
                             .scale    = { 100.0f, 100.0f }
                         },
                         forge::colours::Cyan
@@ -79,7 +79,7 @@ namespace
                 {
                     renderer.drawTriangle(
                         forge::math::Transform2D {
-                            .position = { 170.4f, 50.0f },
+                            .position = { 170.4f, 50.0f  },
                             .scale    = { 200.0f, 200.0f }
                         },
                         forge::colours::Red
@@ -91,7 +91,7 @@ namespace
                     renderer.drawSprite(
                         *heart,
                         forge::math::Transform2D {
-                            .position = { 100.f, 150.f },
+                            .position = { 100.f,  150.f },
                             .scale    = { 512.0f, 512.0f }
                         }
                     );

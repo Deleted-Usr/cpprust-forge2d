@@ -35,7 +35,10 @@ corrosion_import_crate(
 corrosion_add_cxxbridge(
     forge2d_rust
     CRATE forge_bridge
-    FILES assets.rs
+
+    FILES
+        assets.rs
+        audio.rs
 )
 
 # Give engine code one stable CMake target to link against.

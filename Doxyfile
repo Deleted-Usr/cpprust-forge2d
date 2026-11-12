@@ -1,0 +1,8 @@
+PROJECT_NAME     = Forge2D
+INPUT            = engine/include/forge2d
+RECURSIVE        = YES
+EXTRACT_PRIVATE  = NO
+EXCLUDE_SYMBOLS  = forge::internal forge::detail
+OUTPUT_DIRECTORY = docs/api
+GENERATE_LATEX   = NO
+MARKDOWN_SUPPORT = YES

@@ -1,0 +1,101 @@
+name: CI # Continuous Integration
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # ---------------------------------------------------------
+  # Build + test on each platform
+  # ---------------------------------------------------------
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux (GCC)
+            os: ubuntu-24.04
+            cc: gcc
+            cxx: g++
+          - name: Linux (Clang)
+            os: ubuntu-24.04
+            cc: clang
+            cxx: clang++
+          - name: Windows (MinGW)
+            os: windows-latest
+            cc: gcc
+            cxx: g++
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # rustup reads rust-toolchain.toml, so this installs 1.98.0.
+      - name: Install Rust toolchain
+        run: rustup show
+
+      - name: Install Linux dependencies (GLFW, Mesa, Xvfb)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build xorg-dev libwayland-dev \
+            libxkbcommon-dev libgl1-mesa-dri xvfb
+
+      - name: Install Ninja (Windows)
+        if: runner.os == 'Windows'
+        run: choco install ninja -y
+
+      - name: Configure
+        run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_C_COMPILER=${{ matrix.cc }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+          -DFORGE2D_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      # Xvfb + Mesa llvmpipe gives Linux a software GL context.
+      # If it can't provide 4.6, the GPU test exits 77 and is reported as skipped.
+      - name: Test (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a ctest --test-dir build --output-on-failure
+
+      - name: Test (Windows)
+        if: runner.os == 'Windows'
+        run: ctest --test-dir build --output-on-failure
+
+  # ---------------------------------------------------------
+  # Memory/UB bugs: AddressSanitizer + UndefinedBehaviorSanitizer
+  # ---------------------------------------------------------
+  sanitizers:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup show
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build xorg-dev libwayland-dev \
+            libxkbcommon-dev libgl1-mesa-dri xvfb
+      - run: >
+          cmake -S . -B build -G Ninja
+          -DCMAKE_BUILD_TYPE=Debug
+          -DFORGE2D_BUILD_TESTS=ON
+          -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer"
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
+      - run: cmake --build build --parallel
+      - run: xvfb-run -a ctest --test-dir build --output-on-failure
+
+  # ---------------------------------------------------------
+  # Rust side: formatting, lints, unit tests
+  # ---------------------------------------------------------
+  rust:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup show
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --workspace --locked -- -D warnings
+      - run: cargo test --workspace --locked

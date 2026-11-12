@@ -182,3 +182,13 @@ target_compile_definitions(
     PUBLIC
         $<$<CONFIG:Debug>:FORGE2D_DEBUG>
 )
+
+option(FORGE2D_WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+
+if(FORGE2D_WARNINGS_AS_ERRORS)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        target_compile_options(forge2d PRIVATE -Werror)
+    elseif(MSVC)
+        target_compile_options(forge2d PRIVATE /WX)
+    endif()
+endif()
