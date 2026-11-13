@@ -36,7 +36,7 @@ namespace
 
 namespace forge
 {
-    void InputManager::endFrame(std::span<const internal::InputEvent> events)
+    void InputManager::beginFrame(std::span<const internal::InputEvent> events)
     {
         for (auto& state : keys_)  state.pressed = state.released = false;
         for (auto& state : mouse_) state.pressed = state.released = false;

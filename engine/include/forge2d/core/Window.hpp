@@ -6,6 +6,8 @@
 
 #include <memory>
 #include <string>
+
+#include <forge2d/graphics/Colour.hpp>
 #include <forge2d/graphics/FrameInfo.hpp>
 
 struct GLFWwindow;
@@ -24,6 +26,9 @@ namespace forge
 
         int width  = 1280; ///< Initial width in logical (screen-space) units.
         int height = 720;  ///< Initial height in logical (screen-space) units.
+
+        /// The window's default background colour
+        Colour clearColour = colours::Black;
 
         /// Whether the user can resize the window. Defaults to `true`.
         bool resizable = true;
@@ -100,6 +105,10 @@ namespace forge
             [[nodiscard]]
             int height() const;
 
+            /// The window's default clear colour for each frame
+            [[nodiscard]]
+            Colour clearColour() const;
+
             /// @brief Current logical size and framebuffer size in pixels.
             ///
             /// Queried from the window each call, so it reflects resizes and DPI changes. See
@@ -120,6 +129,8 @@ namespace forge
 
             std::unique_ptr<OpenGLContext> context_;
             std::unique_ptr<internal::glfw::GLFWInput> input_;
+
+            Colour clearColour_;
 
     };
 }

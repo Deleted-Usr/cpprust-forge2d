@@ -9,8 +9,8 @@
 #include <string_view>
 #include <forge2d/input/Key.hpp>
 #include <forge2d/input/MouseButton.hpp>
-#include <forge2d/input/detail/ButtonState.hpp>
-#include <forge2d/input/detail/InputEvents.hpp>
+#include <forge2d/input/internal/ButtonState.hpp>
+#include <forge2d/input/internal/InputEvents.hpp>
 #include <forge2d/math/Vec2.hpp>
 
 namespace forge
@@ -61,7 +61,7 @@ namespace forge
             /// then applies each event. Held state and the mouse position carry over.
             ///
             /// @param events Events received since the previous call, oldest first.
-            void endFrame(std::span<const internal::InputEvent> events);
+            void beginFrame(std::span<const internal::InputEvent> events);
 
             /// @brief Whether @p key is held down. `Key::Unknown` and invalid values return `false`.
             [[nodiscard]] bool isKeyDown     (Key key) const;

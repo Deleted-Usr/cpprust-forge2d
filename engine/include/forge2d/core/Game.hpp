@@ -55,7 +55,7 @@ namespace forge
             ///
             /// @param assetManager The application's asset manager. It outlives the game, so
             ///                     keeping a reference or pointer to it is safe.
-            virtual void onStart(AssetManager& assetManager) {}
+            virtual void onStart([[maybe_unused]] AssetManager& assetManager) {}
 
             /// @brief Called once after the window has closed and the last frame has finished.
             ///

@@ -114,6 +114,13 @@ int main()
         config.window.width  = 800;
         config.window.height = 600;
 
+        config.window.clearColour = {
+            0.08f,
+            0.08f,
+            0.10f,
+            1.0f
+        };
+
         config.assetRoot = "assets";
 
         forge::Application app(config, std::make_unique<SandboxGame>());

@@ -42,7 +42,7 @@ int main()
             glfwSetCharCallback        (window, text);
             glfwSetWindowFocusCallback (window, focus);
 
-            snapshot.endFrame(collector.takeEvents());
+            snapshot.beginFrame(collector.takeEvents());
 
             focus(window, GLFW_TRUE);
             cursor(window, 10, 20);
@@ -68,7 +68,7 @@ int main()
 
             key(window, GLFW_KEY_A, 0, GLFW_PRESS, 0);
 
-            snapshot.endFrame(events);
+            snapshot.beginFrame(events);
 
             check(snapshot.isKeyPressed(forge::Key::D) && snapshot.isKeyReleased(forge::Key::D) && !snapshot.isKeyDown(forge::Key::D), "short key tap");
             check(snapshot.isMouseButtonPressed(forge::MouseButton::Left) && snapshot.isMouseButtonReleased(forge::MouseButton::Left), "short mouse tap");
@@ -77,17 +77,17 @@ int main()
             check(snapshot.mouseDelta().x  == 4     && snapshot.mouseDelta().y  == 6,             "cursor accumulation");
             check(snapshot.scrollDelta().y == 1.25f && snapshot.textInput()     == U"\U0001F600", "scroll and Unicode");
 
-            snapshot.endFrame(collector.takeEvents());
+            snapshot.beginFrame(collector.takeEvents());
 
             check(snapshot.isKeyPressed(forge::Key::A), "event outside polling retained");
             key(window, GLFW_KEY_A, 0, GLFW_REPEAT, 0);
 
-            snapshot.endFrame(collector.takeEvents());
+            snapshot.beginFrame(collector.takeEvents());
 
             check(snapshot.isKeyDown(forge::Key::A) && !snapshot.isKeyPressed(forge::Key::A), "repeat ignored and queue drained once");
             focus(window, GLFW_FALSE);
 
-            snapshot.endFrame(collector.takeEvents());
+            snapshot.beginFrame(collector.takeEvents());
 
             check(snapshot.isKeyReleased(forge::Key::A) && !snapshot.isKeyDown(forge::Key::A), "focus releases held input");
         }

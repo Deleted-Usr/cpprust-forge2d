@@ -37,12 +37,7 @@ namespace forge
             game_->update(deltaTime, input_);
 
             // Render
-            renderer_.beginFrame(window_.frameInfo(), {
-                0.08f,
-                0.08f,
-                0.10f,
-                1.0f
-            });
+            renderer_.beginFrame(window_.frameInfo(), window_.clearColour());
 
             game_->render(renderer_);
 

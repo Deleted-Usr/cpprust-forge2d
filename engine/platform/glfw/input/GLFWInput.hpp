@@ -4,7 +4,7 @@
 #include <span>
 #include <vector>
 
-#include <forge2d/input/detail/InputEvents.hpp>
+#include <forge2d/input/internal/InputEvents.hpp>
 
 struct GLFWwindow;
 

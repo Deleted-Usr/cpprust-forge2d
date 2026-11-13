@@ -68,6 +68,8 @@ namespace forge
 
         glfwSwapInterval(config.vsync ? 1 : 0);
         input_ = std::make_unique<internal::glfw::GLFWInput>(handle_);
+
+        clearColour_ = config.clearColour;
     }
 
     Window::~Window()
@@ -105,7 +107,7 @@ namespace forge
 
     void Window::updateInput(InputManager& input)
     {
-        input.endFrame(input_->takeEvents());
+        input.beginFrame(input_->takeEvents());
     }
 
     int Window::width() const
@@ -122,6 +124,11 @@ namespace forge
         glfwGetWindowSize(handle_, &width, &height);
 
         return height;
+    }
+
+    Colour Window::clearColour() const
+    {
+        return clearColour_;
     }
 
     FrameInfo Window::frameInfo() const

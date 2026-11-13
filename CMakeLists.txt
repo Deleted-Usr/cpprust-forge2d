@@ -42,6 +42,12 @@ option(
 )
 
 option(
+    FORGE2D_BUILD_SHMUP
+    "Build the shoot em' up"
+    ON
+)
+
+option(
     FORGE2D_BUILD_EXAMPLES
     "Build Forge2D examples"
     ON
@@ -72,6 +78,10 @@ add_subdirectory(engine)
 
 if(FORGE2D_BUILD_PLATFORMER)
     add_subdirectory(games/platformer)
+endif()
+
+if (FORGE2D_BUILD_SHMUP)
+    add_subdirectory(games/shmup)
 endif()
 
 # ------------------------------------------------------------

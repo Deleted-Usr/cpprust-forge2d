@@ -14,7 +14,7 @@ int main()
 
     const auto frame = [&](std::initializer_list<InputEvent> events)
     {
-        input.endFrame(std::span<const InputEvent>{events.begin(), events.size()});
+        input.beginFrame(std::span<const InputEvent>{events.begin(), events.size()});
     };
 
     try
