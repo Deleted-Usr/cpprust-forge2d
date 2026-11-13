@@ -1,5 +1,24 @@
 # Tests use the standard library only; no extra downloaded test framework.
+
+# --- Input Tests --- #
+add_executable(forge2d-input-tests InputTests.cpp)
+
+target_link_libraries(forge2d-input-tests PRIVATE forge2d)
+add_test(NAME forge2d-input COMMAND forge2d-input-tests)
+
+add_executable(forge2d-glfw-input-tests GLFWInputTests.cpp)
+
+target_include_directories(forge2d-glfw-input-tests PRIVATE
+    "${PROJECT_SOURCE_DIR}/engine/platform"
+)
+target_link_libraries(forge2d-glfw-input-tests PRIVATE forge2d glfw)
+
+add_test(NAME forge2d-glfw-input COMMAND forge2d-glfw-input-tests)
+set_tests_properties(forge2d-glfw-input PROPERTIES SKIP_RETURN_CODE 77)
+
+# --- Asset Manager Tests --- #
 add_executable(forge2d-image-tests ImageTests.cpp)
+
 target_link_libraries(forge2d-image-tests PRIVATE forge2d)
 target_compile_definitions(forge2d-image-tests PRIVATE
     FORGE2D_IMAGE_FIXTURE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/fixtures/images"
@@ -8,6 +27,7 @@ target_compile_definitions(forge2d-image-tests PRIVATE
 )
 add_test(NAME forge2d-images COMMAND forge2d-image-tests)
 
+# --- Rendering Tests --- #
 add_executable(forge2d-tests Renderer2DTests.cpp)
 
 target_include_directories(

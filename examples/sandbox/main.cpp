@@ -11,19 +11,20 @@ namespace
     {
         float x = 300.f, y = 200.f;
 
-        void update(float deltaTime)
+        void update(float deltaTime, const forge::InputManager& input)
         {
-            x += 1;
+            if (input.isKeyDown(forge::Key::W)) y -= 200.0f * deltaTime;
+            if (input.isKeyDown(forge::Key::A)) x -= 200.0f * deltaTime;
+            if (input.isKeyDown(forge::Key::S)) y += 200.0f * deltaTime;
+            if (input.isKeyDown(forge::Key::D)) x += 200.0f * deltaTime;
         }
 
         void render(forge::Renderer2D& renderer)
         {
-            renderer.drawRect(
-                forge::math::Transform2D {
-                    .position = { x, y },
-                    .scale    = { 100.0f, 100.0f }
-                },
-                forge::colours::Green
+            renderer.drawCircle(
+                { x, y },
+                10.f,
+                forge::colours::Cyan
             );
         }
 
@@ -50,9 +51,9 @@ namespace
                 camera.follow(player);
             }
 
-            void update(float deltaTime) override
+            void update(float deltaTime, const forge::InputManager& input) override
             {
-                player.update(deltaTime);
+                player.update(deltaTime, input);
                 camera.update(deltaTime);
             }
 
@@ -64,18 +65,19 @@ namespace
                 }
                 player.render(renderer);
 
-                if (bool drawRect = true)
+                if (bool drawRect = false)
                 {
                     renderer.drawRect(
                         forge::math::Transform2D {
                             .position = { 15.0f,  15.0f  },
                             .scale    = { 100.0f, 100.0f }
                         },
-                        forge::colours::Cyan
+                        forge::colours::Cyan,
+                        false
                     );
                 }
 
-                if (bool drawTriangle = true)
+                if (bool drawTriangle = false)
                 {
                     renderer.drawTriangle(
                         forge::math::Transform2D {
@@ -86,7 +88,7 @@ namespace
                     );
                 }
 
-                if (bool drawSprite = true)
+                if (bool drawSprite = false)
                 {
                     renderer.drawSprite(
                         *heart,

@@ -2,8 +2,11 @@
 
 #include <stdexcept>
 
+#include <glfw/input/GLFWInput.hpp>
 #include <opengl/OpenGLContext.hpp>
+
 #include <forge2d/debug/Log.hpp>
+#include <forge2d/input/InputManager.hpp>
 
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -64,10 +67,13 @@ namespace forge
         context_->initialise();
 
         glfwSwapInterval(config.vsync ? 1 : 0);
+        input_ = std::make_unique<internal::glfw::GLFWInput>(handle_);
     }
 
     Window::~Window()
     {
+        // Detach callbacks while the native window is still alive.
+        input_.reset();
         // Destroy OpenGL-related state before destroying
         // the native window/context.
         context_.reset();
@@ -95,6 +101,11 @@ namespace forge
     void Window::swapBuffers()
     {
         context_->swapBuffers();
+    }
+
+    void Window::updateInput(InputManager& input)
+    {
+        input.endFrame(input_->takeEvents());
     }
 
     int Window::width() const

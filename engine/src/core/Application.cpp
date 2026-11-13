@@ -31,9 +31,10 @@ namespace forge
 
             // Events
             window_.pollEvents();
+            window_.updateInput(input_);
 
             // Update
-            game_->update(deltaTime);
+            game_->update(deltaTime, input_);
 
             // Render
             renderer_.beginFrame(window_.frameInfo(), {

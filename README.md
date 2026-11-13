@@ -110,9 +110,10 @@ class MyGame final : public forge::Game
             mySprite_ = assets.loadTexture("cool-image.png");
         }
 
-        void update(float deltaTime) override
+        void update(float deltaTime, const forge::InputManager& input) override
         {
-            x_ += 100.0f * deltaTime; // 100 pixels per second
+            if (input.isKeyDown(forge::Key::D))
+                x_ += 100.0f * deltaTime; // 100 pixels per second
         }
 
         void render(forge::Renderer2D& renderer) override
@@ -211,7 +212,7 @@ Design notes live in `docs/`:
 
 ## Roadmap
 
-- [ ] Input system (`InputManager`)
+- [x] Keyboard/mouse input snapshots (`InputManager`)
 - [ ] Audio engine implementation
 - [ ] Fixed-timestep game loop option
 - [ ] Text rendering

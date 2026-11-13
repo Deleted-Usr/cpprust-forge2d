@@ -49,7 +49,10 @@ add_library(
     # GLFW
     # --------------------------------------------------------
 
+    platform/glfw/input/GLFWInput.cpp
 
+    platform/glfw/input/KeyTranslation.cpp
+    platform/glfw/input/MouseButtonTranslation.cpp
 
     # --------------------------------------------------------
     # OpenGL
