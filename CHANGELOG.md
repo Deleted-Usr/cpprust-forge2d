@@ -5,7 +5,7 @@ All notable changes to Forge2D are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## 0.1.0 - 2026-11-14 - Initial Release
 
 The first version of Forge2D: a window and game loop, a batched OpenGL 2D renderer with a camera,
 a cached asset pipeline with Rust image decoding, and debug tooling.
@@ -13,7 +13,7 @@ a cached asset pipeline with Rust image decoding, and debug tooling.
 ### Added
 
 #### Core
-- `Application` and `ApplicationConfig`, which own the window, asset manager and renderer and run the game loop:
+- `Application` and `ApplicationConfig`, which own the window, asset manager, input manager, renderer and run the game loop:
 events, `update(deltaTime)`, rendering and buffer swapping. Elapsed time is measured with `std::chrono::steady_clock`.
 - `Game` base class with `onStart(AssetManager&)`, `update(float)`, `render(Renderer2D&)` and `onStop()` hooks.
 - `Window` and `WindowConfig` (title, size, resizability, vsync), backed by GLFW and an OpenGL 4.6 core context.
@@ -50,6 +50,12 @@ recompiling. All other build types embed them in the binary through a CMake-gene
 - `Vec2`, `Vec4`, `Mat4` and `Transform2D` (position, scale, rotation), with GLM used internally as a header-only library.
 - `Time` and `Clock` utilities.
 
+#### Input
+- `InputManager`: a frame-based input manager supported by GLFW
+  - `isKeyDown`, `isMouseButtonDown` for keys and mouse buttons held down over multiple frames
+  - `isKeyPressed`, `isMouseButtonPressed` for keys and mouse buttons pressed this frame
+  - `isKeyReleased`, `isMouseButtonReleased` for keys and mouse buttons released this frame
+
 #### Debug
 - Levelled logging (`TRACE` to `FATAL`) with source locations and pluggable sinks.
 - `FORGE_ASSERT` (Debug only), `FORGE_CHECK`, `FORGE_ENSURE` and `FORGE_UNREACHABLE`, with a debugger break on each
@@ -83,3 +89,5 @@ an OpenGL 4.6 context.
 #### Documentation
 - Design notes on the renderer, the OpenGL backend and batching, OpenGL vs Vulkan, camera usage from game code,
 engine resource management, and the planned Rust and Kotlin scripting frontends.
+
+
