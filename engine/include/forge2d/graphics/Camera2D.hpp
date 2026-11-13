@@ -43,9 +43,9 @@ namespace forge
     ///     camera_.setLookAhead({ 48.0f, -16.0f });
     /// }
     ///
-    /// void update(float dt) override
+    /// void update(float dt, const forge::InputManager& input) override
     /// {
-    ///     player_.update(dt);
+    ///     player_.update(dt, input);
     ///     camera_.update(dt);
     /// }
     ///

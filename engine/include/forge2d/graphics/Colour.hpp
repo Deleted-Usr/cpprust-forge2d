@@ -11,7 +11,7 @@ namespace forge
 {
     /// @brief An RGBA colour with floating-point channels from `0.0` to `1.0`.
     ///
-    /// Alpha is straight (not premultiplied): `a = 1 is opaque and `a = 0` is fully
+    /// Alpha is straight (not premultiplied): `a = 1` is opaque and `a = 0` is fully
     /// transparent. A default-constructed colour is opaque black.
     ///
     /// @code

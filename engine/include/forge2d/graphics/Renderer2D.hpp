@@ -23,6 +23,7 @@ namespace forge
     /// Games normally only call the `draw*()`, `setCamera()` and `resetCamera()` functions.
     ///
     /// ### Coordinates
+    ///
     /// Each frame starts in **screen space**: the origin is the top-left corner of the window,
     /// +X points right, +Y points down, and one unit is one logical window coordinate
     /// (see `FrameInfo::logicalSize`). After `setCamera()`, coordinates are **world units**

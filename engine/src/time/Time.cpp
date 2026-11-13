@@ -2,28 +2,25 @@
 
 namespace forge::time
 {
-    Time::Time(long microseconds)
-    {
-        this->ms = microseconds;
-    }
+    Time::Time(const std::int64_t microseconds) : micros_(microseconds) { }
 
     Time Time::Zero()
     {
-        return Time(0L);
+        return Time(0);
     }
 
     // Factory Methods
     Time Time::seconds(float amount)
     {
-        return Time(static_cast<long>(amount * 1'000'000.0f));
+        return Time(static_cast<std::int64_t>(static_cast<double>(amount) * 1'000'000.0));
     }
 
-    Time Time::milliseconds(long amount)
+    Time Time::milliseconds(const std::int64_t amount)
     {
-        return Time(amount * 1000.0f);
+        return Time(amount * 1000);
     }
 
-    Time Time::microseconds(long amount)
+    Time Time::microseconds(const std::int64_t amount)
     {
         return Time(amount);
     }
@@ -31,17 +28,17 @@ namespace forge::time
     // Conversions
     float Time::asSeconds() const
     {
-        return ms / 1'000'000.0f;
+        return static_cast<float>(static_cast<double>(micros_) / 1'000'000.0);
     }
 
-    long Time::asMilliseconds() const
+    std::int64_t Time::asMilliseconds() const
     {
-        return ms / 1000L;
+        return micros_ / 1000;
     }
 
-    long Time::asMicroseconds() const
+    std::int64_t Time::asMicroseconds() const
     {
-        return ms;
+        return micros_;
     }
 
     std::string Time::toString() const

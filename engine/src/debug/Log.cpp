@@ -33,7 +33,7 @@ namespace forge::log
         std::string_view fileName(std::string_view path) noexcept
         {
             const auto slash = path.find_last_of("/\\");
-            return slash == std::string_view::npos ? "" : path.substr(slash + 1);
+            return slash == std::string_view::npos ? path : path.substr(slash + 1);
         }
 
         std::string_view colour(const Level level) noexcept
@@ -91,7 +91,7 @@ namespace forge::log
         return state().level.load(std::memory_order_relaxed);
     }
 
-    void setConsoleLevel(const bool enabled) noexcept
+    void setConsoleEnabled(const bool enabled) noexcept
     {
         state().console.store(enabled);
     }

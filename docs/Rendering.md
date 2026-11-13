@@ -3,7 +3,7 @@
 `Application` owns frame setup and presentation. Games can draw immediately without
 constructing or selecting a camera:
 
-```cpp
+```c++
 void render(forge::Renderer2D& renderer) override
 {
     renderer.drawRect(
@@ -38,7 +38,7 @@ void onStart(forge::AssetManager&) override
     camera.snapToTarget();
 }
 
-void update(float deltaTime) override
+void update(float deltaTime, const forge::InputManager&) override
 {
     player.update(deltaTime);
     camera.update(deltaTime);

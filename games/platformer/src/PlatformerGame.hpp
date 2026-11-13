@@ -9,7 +9,7 @@ class PlatformerGame final : public forge::Game
         void onStart(forge::AssetManager& assetManager) override;
         void onStop()  override;
 
-        void update(float deltaTime) override;
+        void update(float deltaTime, const forge::InputManager& input) override;
         void render(forge::Renderer2D& renderer) override;
 
     private:

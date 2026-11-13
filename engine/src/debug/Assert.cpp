@@ -32,7 +32,7 @@ namespace forge::detail
     {
         report(log::Level::FATAL, "Assertion", expression, location, message);
 
-        #ifndef FORGE2D_DEBUG
+        #ifdef FORGE2D_DEBUG
             FORGE_DEBUG_BREAK();
         #endif
 
@@ -43,7 +43,7 @@ namespace forge::detail
     {
         report(log::Level::ERROR, "Ensure", expression, location, message);
 
-        #ifndef FORGE2D_DEBUG
+        #ifdef FORGE2D_DEBUG
             // Uncomment to stop in the debugger on the first failure of each ENSURE:
             // FORGE_DEBUG_BREAK();
         #endif

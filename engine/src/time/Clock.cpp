@@ -23,7 +23,7 @@ namespace forge::time
     Time Clock::getElapsedTime() const
     {
         const std::int64_t end = isRunning() ? nowNanos() : stopNanos_;
-        return Time::microseconds(static_cast<long>((end - refNanos_) / 1000));
+        return Time::microseconds((end - refNanos_) / 1000);
     }
 
     void Clock::start()
