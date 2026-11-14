@@ -79,8 +79,39 @@ cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Debug
 | Option                   | Default | Description                     |
 |--------------------------|---------|---------------------------------|
 | `FORGE2D_BUILD_PLATFORMER` | `ON`  | Build the platformer game       |
+| `FORGE2D_BUILD_SHMUP`      | `ON`  | Build the shoot 'em up game     |
 | `FORGE2D_BUILD_EXAMPLES`   | `ON`  | Build the sandbox example       |
 | `FORGE2D_BUILD_TESTS`      | `OFF` | Build the test executables      |
+
+The games and examples default to `OFF` when Forge2D is added to another project.
+
+## Using Forge2D in your project
+
+Add Forge2D to your own CMake project with `FetchContent`, pinned to a release tag:
+
+```cmake
+cmake_minimum_required(VERSION 3.25)
+project(my_game LANGUAGES C CXX)
+
+include(FetchContent)
+FetchContent_Declare(
+    forge2d
+    GIT_REPOSITORY https://github.com/Deleted-Usr/cpprust-forge2d.git
+    GIT_TAG        v0.1.0
+)
+FetchContent_MakeAvailable(forge2d)
+
+add_executable(my_game main.cpp)
+target_compile_features(my_game PRIVATE cxx_std_20)
+target_link_libraries(my_game PRIVATE forge2d::forge2d)
+
+# Debug builds load shaders from disk; this copies them next to the executable.
+forge2d_copy_shaders(my_game)
+```
+
+Your machine needs the same tools listed under [Requirements](#requirements), including
+Rust, because Forge2D's Rust crates are built as part of your project. `add_subdirectory()` on a
+local copy works the same way.
 
 ## Running
 
@@ -222,4 +253,13 @@ Design notes live in `docs/`:
 
 ## License
 
-No license has been chosen yet. Until one is added, all rights are reserved.
+Forge2D is licensed under either of
+
+- [Apache License, Version 2.0](LICENSE-APACHE)
+- [MIT License](LICENSE-MIT)
+
+at your option.
+
+Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion
+in Forge2D by you, as defined in the Apache-2.0 license, shall be dual licensed as above,
+without any additional terms or conditions.

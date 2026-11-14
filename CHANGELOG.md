@@ -10,14 +10,18 @@ and this project follows [Semantic Versioning](https://semver.org/).
 The first version of Forge2D: a window and game loop, a batched OpenGL 2D renderer with a camera,
 a cached asset pipeline with Rust image decoding, and debug tooling.
 
+Forge2D is dual licensed under MIT OR Apache-2.0.
+
 ### Added
 
 #### Core
 - `Application` and `ApplicationConfig`, which own the window, asset manager, input manager, renderer and run the game loop:
 events, `update(deltaTime)`, rendering and buffer swapping. Elapsed time is measured with `std::chrono::steady_clock`.
-- `Game` base class with `onStart(AssetManager&)`, `update(float)`, `render(Renderer2D&)` and `onStop()` hooks.
+- `Game` base class with `onStart(AssetManager&)`, `update(float, const InputManager&)`, `render(Renderer2D&)` and
+`onStop()` hooks.
 - `Window` and `WindowConfig` (title, size, resizability, vsync), backed by GLFW and an OpenGL 4.6 core context.
 `frameInfo()` reports logical and physical sizes, including after a resize.
+- `WindowConfig::clearColour` sets the colour each frame is cleared to (black by default).
 
 #### Rendering
 - `Renderer2D`: a batched 2D renderer that groups draws to keep draw calls low.
@@ -55,6 +59,7 @@ recompiling. All other build types embed them in the binary through a CMake-gene
   - `isKeyDown`, `isMouseButtonDown` for keys and mouse buttons held down over multiple frames
   - `isKeyPressed`, `isMouseButtonPressed` for keys and mouse buttons pressed this frame
   - `isKeyReleased`, `isMouseButtonReleased` for keys and mouse buttons released this frame
+  - `textInput` returns the characters typed this frame as a UTF-8 encoded `std::string_view`
 
 #### Debug
 - Levelled logging (`TRACE` to `FATAL`) with source locations and pluggable sinks.
@@ -71,6 +76,7 @@ supported compiler.
 #### Examples
 - **Sandbox**: a small playground that draws shapes and a sprite and sets up a following camera.
 - **Platformer**: the start of a platformer game, with an asset registry for its textures.
+- **Shoot 'em up**: the start of a shoot 'em up game.
 
 #### Tests
 - `forge2d-cpu`: renderer batching tests that need no GPU.
@@ -80,7 +86,10 @@ an OpenGL 4.6 context.
 - All tests use the standard library only and run through CTest with `-DFORGE2D_BUILD_TESTS=ON`.
 
 #### Build
-- CMake 3.25+ project with `FORGE2D_BUILD_PLATFORMER`, `FORGE2D_BUILD_EXAMPLES` and `FORGE2D_BUILD_TESTS` options.
+- CMake 3.25+ project with `FORGE2D_BUILD_PLATFORMER`, `FORGE2D_BUILD_SHMUP`, `FORGE2D_BUILD_EXAMPLES` and
+`FORGE2D_BUILD_TESTS` options. The games and examples are only built by default when Forge2D is the top-level project.
+- Usable from other projects with `FetchContent` or `add_subdirectory`, through the `forge2d::forge2d` target.
+- `forge2d_copy_shaders(<target>)` copies the batch shaders next to a game's executable for Debug builds.
 - GLFW 3.5.1, GLM 1.0.3 and Corrosion 0.6.1 fetched with `FetchContent`, with GLAD vendored under `external/`.
 - Executables are written to `build/bin/` and libraries to `build/lib/`.
 - `-Wall -Wextra -Wpedantic` (GCC/Clang) and `/W4` (MSVC) warnings.

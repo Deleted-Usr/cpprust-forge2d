@@ -24,7 +24,7 @@ target_link_libraries(
     platformer
 
     PRIVATE
-        forge2d
+        forge2d::forge2d
 )
 
 # ------------------------------------------------------------
@@ -70,17 +70,4 @@ add_custom_command(
 # Copy engine shaders beside the executable
 # ------------------------------------------------------------
 
-add_custom_command(
-    TARGET platformer
-    POST_BUILD
-
-    COMMAND
-        ${CMAKE_COMMAND}
-        "-DCONFIG=$<CONFIG>"
-        "-DSOURCE=${PROJECT_SOURCE_DIR}/engine/shaders"
-        "-DDESTINATION=$<TARGET_FILE_DIR:platformer>/shaders"
-        -P "${PROJECT_SOURCE_DIR}/cmake/copy-debug-shaders.cmake"
-
-    COMMENT
-        "Copying Forge2D shaders for Debug"
-)
+forge2d_copy_shaders(platformer)

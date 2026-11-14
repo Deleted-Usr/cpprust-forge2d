@@ -35,22 +35,25 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY
 # OPTIONS
 # ------------------------------------------------------------
 
+# The games and examples are only built by default when Forge2D is the
+# top-level project, not when it is added with FetchContent/add_subdirectory.
+
 option(
     FORGE2D_BUILD_PLATFORMER
     "Build the platformer"
-    ON
+    ${PROJECT_IS_TOP_LEVEL}
 )
 
 option(
     FORGE2D_BUILD_SHMUP
     "Build the shoot em' up"
-    ON
+    ${PROJECT_IS_TOP_LEVEL}
 )
 
 option(
     FORGE2D_BUILD_EXAMPLES
     "Build Forge2D examples"
-    ON
+    ${PROJECT_IS_TOP_LEVEL}
 )
 
 option(
@@ -65,6 +68,7 @@ option(
 
 include(cmake/dependencies.cmake)
 include(cmake/rust.cmake)
+include(cmake/Forge2DHelpers.cmake)
 
 # ------------------------------------------------------------
 # ENGINE

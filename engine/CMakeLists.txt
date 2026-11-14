@@ -69,6 +69,9 @@ add_library(
     platform/opengl/array/VertexArray.cpp
 )
 
+# Namespaced alias, so consumers can write `target_link_libraries(game PRIVATE forge2d::forge2d)`.
+add_library(forge2d::forge2d ALIAS forge2d)
+
 # ============================================================
 # Embedded Shaders
 # ============================================================

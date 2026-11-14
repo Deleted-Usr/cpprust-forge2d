@@ -6,7 +6,8 @@
 //  Add basic 3D functionality???
 //  Add a method that allows for one time calls on a cool down (void oneTime() in app config, oneTime.setCooldown(...))
 //  Built-in UI using the renderer and input system (based off of Java version)
-//  Embed shaders with a CMake-generated header file
+//  GetScreenWidth() and GetScreenHeight() functions (static functions)
+//  Built-in debug panel
 
 // TODO -
 //  A one shot method that can be called from anywhere in game code that executes once
