@@ -2,6 +2,8 @@
 
 #include <forge2d/core/Game.hpp>
 
+#include "Player.hpp"
+
 class ShmupGame final : public forge::Game
 {
     public:
@@ -12,5 +14,5 @@ class ShmupGame final : public forge::Game
         void render(forge::Renderer2D& renderer) override;
 
     private:
-
+        Player player = {};
 };

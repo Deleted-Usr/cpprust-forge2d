@@ -3,6 +3,9 @@ add_executable(
 
     src/main.cpp
     src/ShmupGame.cpp
+
+    src/Player.cpp
+    src/Bullet.cpp
 )
 
 target_compile_features(

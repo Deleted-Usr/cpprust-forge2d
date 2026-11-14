@@ -106,14 +106,15 @@ namespace forge
             /// user) and positive X is scrolling right.
             [[nodiscard]] math::Vec2 scrollDelta()   const { return scrollDelta_; }
 
-            /// @brief The text typed during this frame, as Unicode code points.
+            /// @brief The text typed during this frame, encoded as UTF-8.
             ///
             /// Unlike key queries, this respects the keyboard layout and includes key repeat, so
-            /// use it for text fields.
+            /// use it for text fields. size() and indexing operate on bytes, not characters.
+            /// Invalid Unicode scalar values in text events become U+FFFD (replacement character).
             ///
             /// @return A view of this frame's text. Valid until the next frame begins; copy it to
             ///         keep it longer.
-            [[nodiscard]] std::u32string_view textInput() const { return text_; }
+            [[nodiscard]] std::string_view textInput() const { return text_; }
 
             /// @brief Whether the window has keyboard focus.
             [[nodiscard]] bool isFocused() const { return focused_; }
@@ -133,7 +134,7 @@ namespace forge
             math::Vec2 mouseDelta_    {};
             math::Vec2 scrollDelta_   {};
 
-            std::u32string text_;
+            std::string text_;
 
             bool focused_           = true;
             bool hasCursorPosition_ = false;

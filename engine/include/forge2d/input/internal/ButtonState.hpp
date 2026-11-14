@@ -9,7 +9,7 @@ namespace forge::internal
     ///
     /// Engine-internal. `pressed` and `released` can both be `true` after a quick tap, and
     /// neither counts how many times the button changed. Queries leave the flags alone;
-    /// `InputManager::endFrame()` clears `pressed` and `released` at the start of each frame.
+    /// `InputManager::beginFrame()` clears `pressed` and `released` at the start of each frame.
     struct ButtonState
     {
         bool down     = false; ///< Held at the end of this frame. Persists across frames.

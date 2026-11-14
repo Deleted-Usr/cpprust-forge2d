@@ -60,6 +60,9 @@ int main()
 
             scroll(window, 0.5, 1.25);
 
+            text(window, 'A');
+            text(window, 0x00e9);
+            text(window, 0x4e2d);
             text(window, 0x1f600);
 
             check(!snapshot.isKeyPressed(forge::Key::D), "snapshot stays stable during callbacks");
@@ -75,7 +78,9 @@ int main()
             check(!snapshot.isKeyDown(forge::Key::A), "next-frame event isolation");
 
             check(snapshot.mouseDelta().x  == 4     && snapshot.mouseDelta().y  == 6,             "cursor accumulation");
-            check(snapshot.scrollDelta().y == 1.25f && snapshot.textInput()     == U"\U0001F600", "scroll and Unicode");
+            check(snapshot.scrollDelta().y == 1.25f
+                  && snapshot.textInput() == "A\xC3\xA9\xE4\xB8\xAD\xF0\x9F\x98\x80",
+                  "scroll and UTF-8 text from GLFW callbacks");
 
             snapshot.beginFrame(collector.takeEvents());
 

@@ -23,13 +23,14 @@ namespace forge::internal
     struct ScrollEvent      { double x; double y; };
 
     /// @brief One Unicode code point of typed text.
+    /// InputManager encodes it into UTF-8 when building the public textInput() view.
     struct TextEvent        { char32_t codepoint; };
 
     /// @brief The window gained or lost focus.
     struct FocusEvent       { bool focused; };
 
     /// @brief Any input event, as queued by the platform layer and applied by
-    ///        `InputManager::endFrame()`.
+    ///        `InputManager::beginFrame()`.
     ///
     /// Engine-internal. Events don't hold any native window pointers.
     using InputEvent = std::variant<

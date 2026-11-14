@@ -4,6 +4,7 @@
 
 #include <initializer_list>
 #include <stdexcept>
+#include <type_traits>
 
 int main()
 {
@@ -11,6 +12,7 @@ int main()
     using namespace forge::internal;
 
     InputManager input;
+    static_assert(std::is_same_v<decltype(input.textInput()), std::string_view>);
 
     const auto frame = [&](std::initializer_list<InputEvent> events)
     {
@@ -77,12 +79,55 @@ int main()
         check(input.mouseDelta().x    == 10    && input.mouseDelta().y    == 8,   "cursor accumulation and Y sign");
         check(input.scrollDelta().x   == 0.25f && input.scrollDelta().y   == 1,   "fractional scroll accumulation");
 
-        check(input.textInput() == U"A\U0001F600", "Unicode input");
+        check(input.textInput() == "A\xF0\x9F\x98\x80", "UTF-8 input");
 
         frame({});
 
         check(input.mouseDelta().x == 0 && input.scrollDelta().y == 0 && input.textInput().empty(), "frame transient reset");
         check(input.mousePosition().x == 110, "cursor position persists");
+
+        // Explicit byte sequences keep expected output independent of source-file encoding.
+        const struct
+        {
+            char32_t codepoint;
+            std::string_view bytes;
+        } encodings[] = {
+            {0x0000, std::string_view{"\0", 1}},
+            {0x007F, "\x7F"},
+            {0x0080, "\xC2\x80"},
+            {0x07FF, "\xDF\xBF"},
+            {0x0800, "\xE0\xA0\x80"},
+            {0xD7FF, "\xED\x9F\xBF"},
+            {0xE000, "\xEE\x80\x80"},
+            {0xFFFF, "\xEF\xBF\xBF"},
+            {0x10000, "\xF0\x90\x80\x80"},
+            {0x10FFFF, "\xF4\x8F\xBF\xBF"}
+        };
+        for (const auto& encoding : encodings)
+        {
+            frame({TextEvent{encoding.codepoint}});
+            check(input.textInput() == encoding.bytes, "UTF-8 encoding boundary");
+        }
+
+        frame({TextEvent{U'A'}, TextEvent{U'\u00E9'},
+               TextEvent{U'\u4E2D'}, TextEvent{U'\U0001F600'}});
+        const std::string_view expectedText = "A\xC3\xA9\xE4\xB8\xAD\xF0\x9F\x98\x80";
+        check(input.textInput() == expectedText, "mixed UTF-8 characters preserve event order");
+        check(input.textInput().size() == 10, "UTF-8 view size counts bytes");
+        check(input.textInput() == expectedText, "text queries do not consume text");
+        std::string savedText;
+        savedText.append(input.textInput());
+        frame({});
+        check(input.textInput().empty() && savedText == expectedText,
+              "UTF-8 frame reset does not affect an owned copy");
+
+        for (char32_t invalid : {0xD800, 0xDBFF, 0xDC00, 0xDFFF, 0x110000})
+        {
+            frame({TextEvent{invalid}, TextEvent{U'!'}});
+            check(input.textInput() == "\xEF\xBF\xBD!", "invalid scalar is replaced without losing following text");
+        }
+        frame({TextEvent{static_cast<char32_t>(0xFFFFFFFFu)}});
+        check(input.textInput() == "\xEF\xBF\xBD", "invalid maximum value is replaced");
 
         frame(
             {

@@ -36,12 +36,51 @@ false.
   The first sample and the first sample after a focus change establish a baseline.
 - `scrollDelta()` accumulates fractional horizontal and vertical scroll offsets;
   positive Y means scroll up.
-- `textInput()` returns this frame's Unicode code points as a
-  `std::u32string_view`, valid until the next frame boundary.
+- `textInput()` returns this frame's typed text as a UTF-8
+  `std::string_view`, valid until the next `beginFrame()` call or manager destruction.
 - `isFocused()` reports window focus. Focus loss releases held keys and mouse
   buttons. Press, scroll, and text events are ignored while unfocused.
 
 Movement, scroll, and text reset each input frame. Mouse position persists.
+
+### UTF-8 text input
+
+Use text input for a name field, chat or console. Physical key queries handle
+gameplay controls and editing commands; text events supply characters after the
+platform interprets the keyboard layout and modifiers.
+
+The returned view borrows the manager's `std::string` buffer without copying it.
+Append it to an owned string to keep text across frames:
+
+```c++
+std::string playerName; // Persistent UI state.
+
+// During update, when this field has UI focus:
+playerName.append(input.textInput());
+
+// Or take an owned copy of just this frame's text:
+const std::string typedThisFrame{input.textInput()};
+```
+
+Multiple events are concatenated in arrival order. ASCII uses one byte per code
+point; other code points can use two, three or four UTF-8 bytes. For example,
+`A` + `é` + `中` + `😀` produces ten bytes. `size()` counts bytes, and indexing
+accesses bytes, not complete Unicode characters. Removing the last byte with
+`pop_back()` can split an encoded character; text editing needs Unicode-aware
+cursor and deletion logic.
+
+Repeated queries do not consume text. An empty input frame clears the manager's
+buffer; copy any text you need before then. The view is length-delimited and may
+contain an embedded NUL if one is supplied as a text event. Do not treat its
+`data()` as a complete C string or retain it across snapshot changes.
+
+Text events retain their `char32_t` payload internally. While applying a focused
+text event, the manager encodes that code point using the shortest
+[UTF-8 byte sequence](https://www.rfc-editor.org/rfc/rfc3629#section-3).
+Surrogate values (U+D800 through U+DFFF) and values above U+10FFFF are encoded as
+U+FFFD, the replacement character (`EF BF BD` in UTF-8), so malformed internal
+events do not produce invalid UTF-8. No normalization is performed. Unfocused
+text events remain ignored.
 
 ## Engine ownership and timing
 
@@ -57,7 +96,7 @@ Each application iteration runs:
 3. `game.update(deltaTime, input)`
 4. Render and present
 
-`updateInput()` drains the queue and calls `InputManager::endFrame()`, which
+`updateInput()` drains the queue and calls `InputManager::beginFrame()`, which
 clears transient state and applies events in order. Events received outside
 `pollEvents()` remain pending until the next drain. Gameplay should not advance
 the snapshot itself.
@@ -77,11 +116,13 @@ The implementation has three responsibilities:
 | `Window` | Native window and its collector | Keep callback state alive and drain events at the update boundary |
 | `InputManager` | Button states, position, deltas, text and focus | Apply events in order and expose repeatable queries |
 
-The neutral payload types live in `forge2d/input/detail/InputEvents.hpp`.
+The neutral payload types live in `forge2d/input/internal/InputEvents.hpp`.
 `KeyEvent` and `MouseButtonEvent` contain engine enums and a down/up value;
 cursor events contain absolute positions; scroll events contain relative offsets.
 Text events contain individual Unicode code points, and focus events contain the
 new window focus state. None of these payloads retains a native window pointer.
+TextEvent remains a code point at this boundary; encoding to UTF-8 belongs to
+InputManager when it appends to the frame's text buffer.
 
 
 ### Callback registration and lifetime
@@ -121,7 +162,7 @@ callbacks can also occur during other GLFW window operations.
 
 ### Applying a snapshot
 
-Despite its name, `endFrame(events)` runs **before** the gameplay update. It first
+`beginFrame(events)` runs **before** the gameplay update. It first
 clears button edge flags, movement, scrolling and text, then visits each event.
 It retains held state, cursor position and focus from the preceding snapshot.
 

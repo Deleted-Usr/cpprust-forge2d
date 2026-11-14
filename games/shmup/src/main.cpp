@@ -14,6 +14,8 @@ int main()
                 .width = 400,
                 .height = 650,
 
+                .clearColour = forge::colours::White,
+
                 .vsync = true
             }
         };

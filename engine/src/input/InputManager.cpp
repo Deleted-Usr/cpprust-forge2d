@@ -3,6 +3,40 @@
 
 namespace
 {
+    /// @brief Appends the shortest UTF-8 encoding of one Unicode scalar value.
+    /// Surrogates and values beyond U+10FFFF are replaced with U+FFFD.
+    /// Encoding layout: https://www.rfc-editor.org/rfc/rfc3629#section-3
+    void appendUtf8(std::string& text, char32_t codepoint)
+    {
+        if (codepoint > 0x10FFFF || (codepoint >= 0xD800 && codepoint <= 0xDFFF))
+        {
+            codepoint = 0xFFFD;
+        }
+
+        if (codepoint <= 0x7F)
+        {
+            text.push_back(static_cast<char>(codepoint));
+        }
+        else if (codepoint <= 0x7FF)
+        {
+            text.push_back(static_cast<char>(0xC0 | (codepoint >> 6)));
+            text.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+        }
+        else if (codepoint <= 0xFFFF)
+        {
+            text.push_back(static_cast<char>(0xE0 | (codepoint >> 12)));
+            text.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F)));
+            text.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+        }
+        else
+        {
+            text.push_back(static_cast<char>(0xF0 | (codepoint >> 18)));
+            text.push_back(static_cast<char>(0x80 | ((codepoint >> 12) & 0x3F)));
+            text.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3F)));
+            text.push_back(static_cast<char>(0x80 | (codepoint & 0x3F)));
+        }
+    }
+
     /// @brief Records real transitions without erasing earlier edges in this snapshot.
     /// Duplicate states are ignored, so OS/synthetic releases cannot generate extra edges.
     /// A complete tap preserves pressed and released even though its final down state is false.
@@ -101,7 +135,7 @@ namespace forge
 
     void InputManager::apply(const internal::TextEvent& event)
     {
-        if (focused_) text_ += event.codepoint;
+        if (focused_) appendUtf8(text_, event.codepoint);
     }
 
     void InputManager::apply(const internal::FocusEvent& event)

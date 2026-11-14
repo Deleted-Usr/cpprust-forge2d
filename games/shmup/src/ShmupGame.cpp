@@ -14,10 +14,10 @@ void ShmupGame::onStop()
 
 void ShmupGame::update(float deltaTime, const forge::InputManager& input)
 {
-
+    player.update(deltaTime, input);
 }
 
 void ShmupGame::render(forge::Renderer2D& renderer)
 {
-
+    player.render(renderer);
 }
