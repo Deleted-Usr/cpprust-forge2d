@@ -1,4 +1,3 @@
-// Window.hpp
 #pragma once
 
 /// @file Window.hpp

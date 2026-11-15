@@ -5,6 +5,14 @@ All notable changes to Forge2D are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### Added
+
+#### Core
+- `Screen`: a new game-facing header used to retrieve the screen's logical width and height. Only static, cannot 
+be instantiated.
+
 ## 0.1.0 - 2026-11-14 - Initial Release
 
 The first version of Forge2D: a window and game loop, a batched OpenGL 2D renderer with a camera,

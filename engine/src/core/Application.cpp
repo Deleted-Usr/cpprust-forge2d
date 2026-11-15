@@ -9,7 +9,15 @@ namespace forge
         const ApplicationConfig& config,
         std::unique_ptr<Game> game
     ) : window_(config.window), assets_(config.assetRoot), renderer_("shaders"), game_(std::move(game))
-    { }
+    {
+        Screen::attach(window_.frameInfo());
+    }
+
+    Application::~Application()
+    {
+        game_.reset();
+        Screen::detach();
+    }
 
     int Application::run()
     {
@@ -32,6 +40,9 @@ namespace forge
             // Events
             window_.pollEvents();
             window_.updateInput(input_);
+
+            const FrameInfo frame = window_.frameInfo();
+            Screen::update(frame);
 
             // Update
             game_->update(deltaTime, input_);

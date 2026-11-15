@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#include <forge2d/core/Screen.hpp>
+
 void Player::update(float deltaTime, const forge::InputManager& input)
 {
     for (auto& bullet : bullets)
@@ -8,7 +10,7 @@ void Player::update(float deltaTime, const forge::InputManager& input)
     }
 
     if (position.x < 5)           position.x = 5;
-    if (position.x + width > 395) position.x = 395 - width;
+    if (position.x + width > forge::Screen::width() - 5) position.x = 395 - width;
 
     if (input.isKeyDown(forge::Key::A)) position.x -= speed * deltaTime;
     if (input.isKeyDown(forge::Key::D)) position.x += speed * deltaTime;

@@ -1,10 +1,9 @@
-// Game.hpp
 #pragma once
 
 /// @file Game.hpp
 /// @brief The interface a game implements to be run by `Application`.
 
-#include "forge2d/assets/AssetManager.hpp"
+#include <forge2d/assets/AssetManager.hpp>
 #include <forge2d/input/InputManager.hpp>
 
 namespace forge

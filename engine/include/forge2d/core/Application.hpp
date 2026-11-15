@@ -39,7 +39,7 @@ namespace forge
     ///
     /// Each frame of `run()`:
     /// 1. measures the time since the previous frame;
-    /// 2. processes window and input events;
+    /// 2. processes window and input events, and samples the window size for `Screen`;
     /// 3. calls `Game::update()`;
     /// 4. clears the screen, calls `Game::render()` and presents the frame.
     ///
@@ -64,7 +64,8 @@ namespace forge
         public:
             /// @brief Opens the window and creates the engine's systems.
             ///
-            /// The game isn't started until `run()`.
+            /// The game isn't started until `run()`. `Screen` works from the end of this
+            /// constructor until the application is destroyed.
             ///
             /// @param config Window and asset settings.
             /// @param game   The game to run. The application takes ownership.
@@ -76,6 +77,14 @@ namespace forge
             /// @note In Debug builds, the renderer reads its shaders from a `shaders` folder in
             ///       the current working directory.
             Application(const ApplicationConfig& config, std::unique_ptr<Game> game);
+
+            /// @brief Destroys the game, then the engine's systems.
+            ///
+            /// The game is destroyed first, while `Screen`, the renderer, the asset manager and
+            /// the GL context still exist, so its destructor can use them and release GPU
+            /// resources safely. `Screen` is then detached, and the renderer, asset manager,
+            /// input and window are destroyed in that order.
+            ~Application();
 
             /// @brief Runs the game until the window is closed.
             ///

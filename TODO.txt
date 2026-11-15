@@ -1,12 +1,10 @@
 // TODO -
 //  Full File IO System (could have an internal IO for shader files etc???)
-//  Sprite/Shape Batching (to complete renderer)
 //  Allow users to use raw OpenGL calls in their games
 //  Kotlin Scripting Frontend
 //  Add basic 3D functionality???
 //  Add a method that allows for one time calls on a cool down (void oneTime() in app config, oneTime.setCooldown(...))
 //  Built-in UI using the renderer and input system (based off of Java version)
-//  GetScreenWidth() and GetScreenHeight() functions (static functions)
 //  Built-in debug panel
 
 // TODO -

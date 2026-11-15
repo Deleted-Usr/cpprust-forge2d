@@ -67,6 +67,7 @@ add_library(
 
     platform/opengl/buffer/Buffer.cpp
     platform/opengl/array/VertexArray.cpp
+    src/core/Screen.cpp
 )
 
 # Namespaced alias, so consumers can write `target_link_libraries(game PRIVATE forge2d::forge2d)`.
