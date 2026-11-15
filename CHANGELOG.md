@@ -13,6 +13,12 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - `Screen`: a new game-facing header used to retrieve the screen's logical width and height. Only static, cannot 
 be instantiated.
 
+#### Math & Time
+- `randomDouble(double min, double max)`: new method in `Math.hpp` used to generate a random double between `min` 
+inclusive and `max` exclusive using `std::random_device`.
+- `randomInt(int min, int max)`: new method in `Math.hpp` used to generate a random integer between `min` inclusive
+and `max` inclusive using `std::random_device`.
+
 ## 0.1.0 - 2026-11-14 - Initial Release
 
 The first version of Forge2D: a window and game loop, a batched OpenGL 2D renderer with a camera,

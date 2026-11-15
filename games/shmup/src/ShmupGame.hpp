@@ -3,6 +3,7 @@
 #include <forge2d/core/Game.hpp>
 
 #include "Player.hpp"
+#include "Enemy.hpp"
 
 class ShmupGame final : public forge::Game
 {
@@ -15,4 +16,7 @@ class ShmupGame final : public forge::Game
 
     private:
         Player player = {};
+        std::vector<Enemy> enemies;
+
+        forge::time::Clock enemySpawnClock;
 };

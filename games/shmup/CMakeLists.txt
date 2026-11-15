@@ -6,6 +6,7 @@ add_executable(
 
     src/Player.cpp
     src/Bullet.cpp
+    src/Enemy.cpp
 )
 
 target_compile_features(

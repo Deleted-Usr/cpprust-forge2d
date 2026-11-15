@@ -22,7 +22,6 @@ void Player::update(float deltaTime, const forge::InputManager& input)
             bullets.emplace_back(Bullet({ position.x + 5, position.y }));
             shootClock.restart();
         }
-
     }
 }
 

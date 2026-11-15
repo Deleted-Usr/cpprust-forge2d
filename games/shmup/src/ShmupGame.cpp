@@ -15,9 +15,25 @@ void ShmupGame::onStop()
 void ShmupGame::update(float deltaTime, const forge::InputManager& input)
 {
     player.update(deltaTime, input);
+
+    if (enemySpawnClock.getElapsedTime().asSeconds() >= 1.0)
+    {
+        enemies.emplace_back();
+        enemySpawnClock.restart();
+    }
+
+    for (auto& enemy : enemies)
+    {
+        enemy.update(deltaTime);
+    }
 }
 
 void ShmupGame::render(forge::Renderer2D& renderer)
 {
     player.render(renderer);
+
+    for (auto& enemy : enemies)
+    {
+        enemy.render(renderer);
+    }
 }

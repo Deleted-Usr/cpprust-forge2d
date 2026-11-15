@@ -3,6 +3,8 @@
 #include <chrono>
 #include <utility>
 
+#include <forge2d/core/Screen.hpp>
+
 namespace forge
 {
     Application::Application(
