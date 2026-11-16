@@ -1,6 +1,7 @@
 #pragma once
 
 #include <forge2d/core/Game.hpp>
+#include <forge2d/graphics/Renderer2D.hpp>
 
 #include "Player.hpp"
 #include "Enemy.hpp"
@@ -19,4 +20,6 @@ class ShmupGame final : public forge::Game
         std::vector<Enemy> enemies;
 
         forge::time::Clock enemySpawnClock;
+
+        void handleCollisions();
 };

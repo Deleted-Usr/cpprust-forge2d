@@ -22,7 +22,7 @@ void Enemy::render(forge::Renderer2D &renderer)
 {
     renderer.drawCircle(
         forge::math::Vec2 { position.x, position.y },
-        15,
+        getRadius(),
         forge::colours::Red
     );
 }

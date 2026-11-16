@@ -9,13 +9,13 @@ void Player::update(float deltaTime, const forge::InputManager& input)
         bullet.update(deltaTime);
     }
 
-    if (position.x < 5)           position.x = 5;
+    if (position.x < 5) position.x = 5;
     if (position.x + width > forge::Screen::width() - 5) position.x = 395 - width;
 
     if (input.isKeyDown(forge::Key::A)) position.x -= speed * deltaTime;
     if (input.isKeyDown(forge::Key::D)) position.x += speed * deltaTime;
 
-    if (input.isMouseButtonDown(forge::MouseButton::Left))
+    if (input.isMouseButtonDown(forge::MouseButton::Left) || input.isKeyDown(forge::Key::Space))
     {
         if (shootClock.getElapsedTime().asSeconds() > fireRate)
         {

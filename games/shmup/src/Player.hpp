@@ -16,6 +16,8 @@ class Player
         void update(float deltaTime, const forge::InputManager& input);
         void render(forge::Renderer2D& renderer);
 
+        std::vector<Bullet>& getBullets() { return bullets; }
+
     private:
         forge::math::Vec2 position { 190, 600 };
         float speed = 300;

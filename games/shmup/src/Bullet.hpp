@@ -10,7 +10,8 @@ class Bullet
         void render(forge::Renderer2D& renderer);
 
         // Getters
-        forge::math::Vec2 getPosition() { return position; }
+        forge::math::Vec2 getPosition() const { return position; }
+        static constexpr float getRadius() { return 4.0f; }
         bool isActive() const           { return active; }
 
         // Setters

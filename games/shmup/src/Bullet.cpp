@@ -18,7 +18,7 @@ void Bullet::render(forge::Renderer2D& renderer)
 
     renderer.drawCircle(
         position,
-        4,
+        getRadius(),
         forge::colours::Yellow
     );
 }
