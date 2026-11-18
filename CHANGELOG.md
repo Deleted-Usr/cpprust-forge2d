@@ -13,11 +13,45 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - `Screen`: a new game-facing header used to retrieve the screen's logical width and height. Only static, cannot 
 be instantiated.
 
+
+
 #### Math & Time
 - `randomDouble(double min, double max)`: new method in `Math.hpp` used to generate a random double between `min` 
 inclusive and `max` exclusive using `std::random_device`.
 - `randomInt(int min, int max)`: new method in `Math.hpp` used to generate a random integer between `min` inclusive
 and `max` inclusive using `std::random_device`.
+
+#### Rendering
+- `Renderer2D::drawText()` with font reference and pointer overloads, position, size and colour. Text uses the current
+camera; `resetCamera()` returns to screen coordinates for HUD and UI.
+- Basic UTF-8 text layout with pair kerning, multiline baseline spacing, four-space tab stops and whitespace advances.
+Malformed UTF-8 becomes the replacement character, and unsupported characters use the font's missing glyph.
+- Internal `TextRenderer` and `GlyphAtlas` components with cached, padded R8 atlas pages, created and uploaded through
+OpenGL Direct State Access. Text shares the existing ordered shape/sprite batches, preserving draw order and retaining
+atlas textures until submission.
+- Font sizes greater than zero and up to `512` logical units per em. Complex-script shaping, bidirectional layout,
+automatic font fallback, wrapping and alignment are not included in this first implementation.
+
+#### Assets
+- `Font`: a copyable, reference-counted CPU font handle with `measureText()` for advance width and typographic line-box
+height, without requiring an OpenGL context.
+- `AssetManager::loadFont()` with string-path and typed `assets::FontAsset` overloads, normalized-path caching and
+`fontCount()`. Missing or invalid font files throw `AssetError` rather than selecting an implicit system font.
+
+#### Rust
+- `forge-font`: font parsing, metrics, basic layout and grayscale glyph rasterisation using `fontdue` 0.9.5.
+- Font operations exposed through the existing CXX bridge, with opaque font ownership, allocator-safe bitmap transfers
+and panic-to-error conversion at the Rust/C++ boundary.
+
+#### Tests
+- `forge2d-text`: CPU font, measurement, UTF-8 layout and atlas-packing tests.
+- `forge2d-text-gpu`: OpenGL pixel tests for glyph coverage, tint/alpha, draw order, camera/HUD behaviour, cache reuse,
+batch/page rollover, resource lifetime and pixel-unpack state. Skipped on machines without a suitable OpenGL context.
+- Rust font layout and rasterisation tests, using a bundled Ubuntu Light fixture with its redistribution licence.
+
+#### Documentation
+- [Text rendering guide](docs/TextRendering.md) covering the public API, layout conventions, atlas ownership, limits and
+validation commands, with implementation status recorded in the original text rendering design doc.
 
 ## 0.1.0 - 2026-11-14 - Initial Release
 
