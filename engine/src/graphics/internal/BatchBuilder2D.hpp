@@ -1,8 +1,10 @@
 #pragma once
 
 #include <span>
+
 #include <forge2d/graphics/Colour.hpp>
 #include <forge2d/math/Transform2D.hpp>
+
 #include "RenderBatch2D.hpp"
 
 namespace forge::internal
@@ -26,7 +28,16 @@ namespace forge::internal
             bool tryAppendCircle   (math::Vec2 centre, float radius,    Colour colour, bool fill);
             bool tryAppendLine     (math::Vec2 from, math::Vec2 to,     Colour colour, float thickness);
 
-            bool tryAppendSprite   (const std::shared_ptr<const GPUTexture>& texture, const math::Transform2D& transform, Colour tint);
+            bool tryAppendSprite (const std::shared_ptr<const GPUTexture>& texture, const math::Transform2D& transform, Colour tint);
+
+            bool tryAppendGlyph (
+                const std::shared_ptr<const GPUTexture>& texture,
+                math::Vec2 position,
+                math::Vec2 size,
+                math::Vec2 uvMin,
+                math::Vec2 uvMax,
+                Colour colour
+            );
 
             [[nodiscard]] const RenderBatch2D& batch() const { return batch_; }
             void clear() { batch_.clear(); }

@@ -2,6 +2,8 @@
 
 #include <cassert>
 #include <future>
+#include <fstream>
+#include <iterator>
 #include <thread>
 #include <unordered_set>
 
@@ -9,6 +11,8 @@
 #include <forge2d/graphics/Texture2D.hpp>
 
 #include <forge2d/assets/AssetCache.hpp>
+
+#include <graphics/internal/FontData.hpp>
 
 namespace forge
 {
@@ -55,6 +59,7 @@ namespace forge
         std::thread::id owner = std::this_thread::get_id();
 
         internal::AssetCache<Texture2D> textures;
+        std::unordered_map<std::string, Font, internal::StringHash, std::equal_to<>> fonts;
 
         explicit Impl(std::filesystem::path assetRoot) : root(std::move(assetRoot)), textures("texture", Texture2D::create(makeMissingTexture())) { }
 
@@ -139,5 +144,42 @@ namespace forge
     std::size_t AssetManager::textureCount() const
     {
         return impl_->textures.size();
+    }
+
+    const Font& AssetManager::loadFont(assets::FontAsset asset)
+    {
+        return loadFont(asset.path);
+    }
+
+    const Font& AssetManager::loadFont(std::string_view path)
+    {
+        impl_->assertOwnerThread();
+
+        const auto key = normaliseKey(path);
+
+        if (const auto found = impl_->fonts.find(key); found != impl_->fonts.end())
+        {
+            return found->second;
+        }
+
+        std::ifstream input(impl_->resolve(key), std::ios::binary);
+        if (!input)
+        {
+            throw AssetError("Could not open font: " + key);
+        }
+
+        const std::vector<std::uint8_t> bytes{std::istreambuf_iterator<char>(input), {}};
+
+        if (input.bad())
+        {
+            throw AssetError("Could not read font: " + key);
+        }
+
+        return impl_->fonts.emplace(key, internal::FontAccess::create(bytes)).first->second;
+    }
+
+    std::size_t AssetManager::fontCount() const
+    {
+        return impl_->fonts.size();
     }
 }

@@ -4,6 +4,7 @@ members = [
 
     "rust/forge-assets",
     "rust/forge-audio",
+    "rust/forge-font",
 ]
 
 resolver = "3"

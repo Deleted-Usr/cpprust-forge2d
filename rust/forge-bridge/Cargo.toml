@@ -13,3 +13,4 @@ cxx.workspace = true
 
 forge-assets = { path = "../forge-assets" }
 forge-audio  = { path = "../forge-audio"  }
+forge-font   = { path = "../forge-font"   }

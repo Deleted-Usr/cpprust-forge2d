@@ -122,6 +122,31 @@ namespace forge::internal
         return appendPolygon(points, colour, fill);
     }
 
+    bool BatchBuilder2D::tryAppendGlyph(
+        const std::shared_ptr<const GPUTexture>& texture,
+        math::Vec2 position,
+        math::Vec2 size,
+        math::Vec2 uvMin,
+        math::Vec2 uvMax,
+        Colour colour
+    )
+    {
+        std::array<Vertex2D, 4> vertices;
+
+        for (std::size_t i = 0; i < Quad.size(); ++i)
+        {
+            const auto corner = Quad[i];
+            vertices[i] = {
+                position + math::Vec2{corner.x * size.x, corner.y * size.y},
+                {uvMin.x + corner.x * (uvMax.x - uvMin.x), uvMin.y + corner.y * (uvMax.y - uvMin.y)},
+                colour.toVec4(),
+                0
+            };
+        }
+
+        return append(vertices, QuadIndices, texture);
+    }
+
     bool BatchBuilder2D::tryAppendTriangle(const math::Transform2D& transform, Colour colour, bool fill)
     {
         const auto matrix = transform.matrix();

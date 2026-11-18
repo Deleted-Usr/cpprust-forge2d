@@ -35,10 +35,19 @@ namespace forge::assets
         bool preload = true;
     };
 
-    /// @brief Identifies a font file.
+    /// @brief Identifies a font file. Pass it to `AssetManager::loadFont()`.
     ///
-    /// @note Reserved for upcoming font support: there is no `AssetManager` function that loads
-    ///       fonts yet.
+    /// A font is loaded once and drawn at any size, so declare one identifier per font file,
+    /// not per size.
+    ///
+    /// @code
+    /// namespace fonts
+    /// {
+    ///     inline constexpr forge::assets::FontAsset UI { "fonts/MyFont.ttf" };
+    /// }
+    ///
+    /// const forge::Font& ui = assets.loadFont(fonts::UI);
+    /// @endcode
     struct FontAsset
     {
         /// Path relative to the asset root, using `/` separators. Only a view is stored, so it

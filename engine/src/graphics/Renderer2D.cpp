@@ -7,6 +7,7 @@
 #include <graphics/internal/BatchBuilder2D.hpp>
 #include <graphics/internal/RenderView2D.hpp>
 #include <graphics/internal/TextureAccess.hpp>
+#include <graphics/internal/TextRenderer.hpp>
 #include <opengl/OpenGLRenderer2D.hpp>
 
 namespace forge
@@ -17,6 +18,7 @@ namespace forge
 
         Backend backend;
         internal::BatchBuilder2D batches;
+        internal::TextRenderer text;
 
         math::Vec2             logicalSize{};
         internal::RenderView2D defaultView{};
@@ -25,7 +27,10 @@ namespace forge
         bool active   = false;
         bool drawable = false;
 
-        explicit Impl(const std::filesystem::path& shaders): backend(shaders), batches(backend.whiteTexture(), Backend::MaxVertices, Backend::MaxIndices, Backend::MaxTextures){ }
+        explicit Impl(const std::filesystem::path& shaders)
+        : backend(shaders),
+          batches(backend.whiteTexture(), Backend::MaxVertices, Backend::MaxIndices, Backend::MaxTextures),
+          text(backend) { }
 
         bool canDraw() const
         {
@@ -76,6 +81,7 @@ namespace forge
 
         impl_->active = true;
         impl_->batches.clear();
+        impl_->text.beginFrame();
         impl_->logicalSize = frame.logicalSize;
 
         impl_->drawable = std::isfinite(frame.logicalSize.x) && std::isfinite(frame.logicalSize.y) &&
@@ -143,5 +149,23 @@ namespace forge
     void Renderer2D::drawCircle(math::Vec2 centre, float radius, Colour colour, bool fill)
     {
         impl_->append([&] { return impl_->batches.tryAppendCircle(centre, radius, colour, fill); });
+    }
+
+    void Renderer2D::drawText(std::string_view text, const Font& font, math::Vec2 position, float size, Colour colour)
+    {
+        if (!impl_->canDraw() || !font.valid() || text.empty())
+        {
+            return;
+        }
+
+        impl_->text.draw(text, font, position, size, colour, impl_->batches, [&] { impl_->flush(); });
+    }
+
+    void Renderer2D::drawText(std::string_view text, const Font* font, math::Vec2 position,float size, Colour colour)
+    {
+        if (font)
+        {
+            drawText(text, *font, position, size, colour);
+        }
     }
 }

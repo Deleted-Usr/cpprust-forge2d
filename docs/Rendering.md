@@ -1,5 +1,9 @@
 # Renderer2D
 
+Text is supported through `AssetManager::loadFont()` and `Renderer2D::drawText()`.
+See [TextRendering.md](TextRendering.md) for UTF-8 layout, font lifetimes, atlas
+ownership, and examples using screen-space or camera-transformed text.
+
 `Application` owns frame setup and presentation. Games can draw immediately without
 constructing or selecting a camera:
 

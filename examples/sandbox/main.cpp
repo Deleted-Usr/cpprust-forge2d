@@ -39,7 +39,9 @@ namespace
     {
         public:
             float x = 0, y = 0;
+
             const forge::Texture2D* heart{};
+            const forge::Font*      font{};
 
             forge::Camera2D camera;
             Player player;
@@ -47,6 +49,7 @@ namespace
             void onStart(forge::AssetManager& assetManager) override
             {
                 heart = &assetManager.loadTexture("heart16x16.png");
+                font  = &assetManager.loadFont("pixelFont.ttf");
 
                 camera.follow(player);
             }
@@ -64,6 +67,8 @@ namespace
                     renderer.setCamera(camera);
                 }
                 player.render(renderer);
+
+                renderer.drawText("This is a cool text thingy!", font, { 32.f, 100.f }, 32);
 
                 if (bool drawRect = false)
                 {

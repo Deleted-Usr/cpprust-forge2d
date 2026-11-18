@@ -13,6 +13,65 @@
 
 namespace forge::internal
 {
+    namespace
+    {
+        struct UnpackScope
+        {
+            GLint buffer, alignment, rowLength, skipPixels, skipRows;
+            UnpackScope()
+            {
+                glGetIntegerv(GL_PIXEL_UNPACK_BUFFER_BINDING, &buffer);
+                glGetIntegerv(GL_UNPACK_ALIGNMENT, &alignment);
+                glGetIntegerv(GL_UNPACK_ROW_LENGTH, &rowLength);
+                glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &skipPixels);
+                glGetIntegerv(GL_UNPACK_SKIP_ROWS, &skipRows);
+                glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+                glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+                glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+            }
+            ~UnpackScope()
+            {
+                glBindBuffer(GL_PIXEL_UNPACK_BUFFER, static_cast<GLuint>(buffer));
+                glPixelStorei(GL_UNPACK_ALIGNMENT, alignment);
+                glPixelStorei(GL_UNPACK_ROW_LENGTH, rowLength);
+                glPixelStorei(GL_UNPACK_SKIP_PIXELS, skipPixels);
+                glPixelStorei(GL_UNPACK_SKIP_ROWS, skipRows);
+            }
+        };
+    }
+
+    GPUTexture::GPUTexture(int width, int height) : width_(width), height_(height), coverage_(true)
+    {
+        GLint maxSize = 0;
+        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxSize);
+        if (width <= 0 || height <= 0 || width > maxSize || height > maxSize)
+            throw std::invalid_argument("Invalid glyph atlas dimensions");
+        const std::vector<std::uint8_t> clear(static_cast<std::size_t>(width) * height, 0);
+        glCreateTextures(GL_TEXTURE_2D, 1, &id_);
+        glTextureStorage2D(id_, 1, GL_R8, width, height);
+        glTextureParameteri(id_, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(id_, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(id_, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(id_, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        const GLint swizzle[] = {GL_ONE, GL_ONE, GL_ONE, GL_RED};
+        glTextureParameteriv(id_, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
+        const UnpackScope unpack;
+        glTextureSubImage2D(id_, 0, 0, 0, width, height, GL_RED, GL_UNSIGNED_BYTE, clear.data());
+    }
+
+    void GPUTexture::uploadCoverage(int x, int y, int width, int height,
+                                    std::span<const std::uint8_t> pixels) const
+    {
+        if (!coverage_ || x < 0 || y < 0 || width <= 0 || height <= 0 ||
+            width > width_ || height > height_ || x > width_ - width || y > height_ - height ||
+            pixels.size() != static_cast<std::size_t>(width) * height)
+            throw std::invalid_argument("Invalid glyph atlas upload rectangle or bitmap");
+        const UnpackScope unpack;
+        glTextureSubImage2D(id_, 0, x, y, width, height, GL_RED, GL_UNSIGNED_BYTE, pixels.data());
+    }
+
     GPUTexture::GPUTexture(const Image& image, const TextureOptions& options)
     {
         if (image.width <= 0 || image.height <= 0 || image.pixels.size() != static_cast<std::size_t>(image.width) * image.height * 4)

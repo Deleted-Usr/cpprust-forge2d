@@ -14,6 +14,7 @@
 
 #include <forge2d/assets/AssetID.hpp>
 #include <forge2d/graphics/Texture2D.hpp>
+#include <forge2d/graphics/Font.hpp>
 
 namespace forge
 {
@@ -31,13 +32,17 @@ namespace forge
     /// same cached texture. Use `/` as the separator on every platform.
     ///
     /// ### Missing assets
-    /// A file that can't be read or decoded is never fatal. A warning is logged once and the
-    /// path is given the **missing texture**: a 40×40 magenta square with a black border, so the
-    /// problem is obvious on screen. Later loads of the same path return it without retrying.
+    /// A **texture** that can't be read or decoded is never fatal. A warning is logged once and
+    /// the path is given the **missing texture**: a 40×40 magenta square with a black border, so
+    /// the problem is obvious on screen. Later loads of the same path return it without retrying.
+    ///
+    /// A **font** that can't be read or parsed throws `AssetError` instead, because there is no
+    /// built-in fallback font. Nothing is cached for it, so a later load tries the file again.
     ///
     /// ### Lifetime
-    /// `loadTexture()` returns a reference to the cached handle, so callers can either:
-    /// - copy it, which keeps the GPU texture alive on its own and can't dangle; or
+    /// `loadTexture()` and `loadFont()` return a reference to the cached handle, so callers can
+    /// either:
+    /// - copy it, which keeps the texture or font alive on its own and can't dangle; or
     /// - keep a pointer or reference to it, which stays valid until the `AssetManager` is
     ///   destroyed.
     ///
@@ -54,6 +59,7 @@ namespace forge
     ///     heart_ = assets.loadTexture("heart16x16.png");          // copy
     ///     coin_  = &assets.loadTexture(textures::COIN_SPIN);      // pointer
     ///     grass_ = assets.loadTextureRange([](int i) { return std::format("Tiles/Grass{}.png", i); }, 4);
+    ///     font_  = assets.loadFont("fonts/MyFont.ttf");           // throws if missing
     /// }
     /// @endcode
     class AssetManager
@@ -176,6 +182,46 @@ namespace forge
             ///
             /// @pre Called on the main (GL) thread. Blocks until every texture is uploaded.
             void preloadTextures(std::span<const std::string> paths);
+
+            /// @brief Loads a TrueType or OpenType font by path, or returns it from the cache.
+            ///
+            /// The whole file is read and parsed the first time. Fonts aren't tied to a size, so
+            /// one cached font serves every size passed to `Renderer2D::drawText()`.
+            ///
+            /// Unlike `loadTexture()`, a missing or invalid font throws rather than falling back,
+            /// and nothing is cached for it, so loading the same path again tries the file again.
+            /// The engine never picks a system font for you.
+            ///
+            /// @param path Path relative to the asset root.
+            /// @return The cached handle. The reference stays valid until the `AssetManager` is
+            ///         destroyed; copy the `Font` to keep it longer.
+            ///
+            /// @code
+            /// try
+            /// {
+            ///     font_ = assets.loadFont("fonts/MyFont.ttf");
+            /// }
+            /// catch (const forge::AssetError& e)
+            /// {
+            ///     FORGE_LOG_ERROR("no UI font: {}", e.what());
+            /// }
+            /// @endcode
+            ///
+            /// @pre Called on the main thread (Debug builds assert). It doesn't use the GPU.
+            /// @throws AssetError If the file can't be opened or read, or isn't a valid font.
+            [[nodiscard]] const Font& loadFont(std::string_view path);
+
+            /// @brief Loads a font by its typed identifier, or returns it from the cache.
+            ///
+            /// Same as the string overload. Only `asset.path` is used.
+            ///
+            /// @pre Called on the main thread (Debug builds assert).
+            /// @throws AssetError If the file can't be opened or read, or isn't a valid font.
+            [[nodiscard]] const Font& loadFont(assets::FontAsset asset);
+
+            /// @brief Number of cached fonts. Fonts that failed to load aren't counted, because
+            ///        they aren't cached.
+            [[nodiscard]] std::size_t fontCount() const;
 
             /// @brief The texture given to paths that failed to load: a 40×40 magenta square with
             ///        a black border.

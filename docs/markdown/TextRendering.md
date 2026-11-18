@@ -1,5 +1,14 @@
 (17 - 11 - 26)
 
+> **Implementation status (18 November 2026):** the initial design below is now
+> implemented. `forge-font` uses fontdue 0.9.5, exposed through the existing CXX
+> bridge rather than the illustrative raw C ABI. C++ `GlyphAtlas` and `TextRenderer`
+> submit glyph quads through the ordered sprite batch. R8 texture swizzling maps
+> coverage to alpha, so a separate text shader is unnecessary. See
+> [Text rendering usage and implementation](../TextRendering.md) for the actual
+> API, lifetime rules, limits, and validation commands. The remaining speculative
+> examples below describe design alternatives, not additional shipped APIs.
+
 ## Rendering Text in Forge2D
 
 > This design doc was written while following the [Text Rendering](https://learnopengl.com/In-Practice/Text-Rendering)

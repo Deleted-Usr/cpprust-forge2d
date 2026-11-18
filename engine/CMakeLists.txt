@@ -30,6 +30,9 @@ add_library(
     src/graphics/Renderer2D.cpp
     src/graphics/Texture2D.cpp
     src/graphics/Camera2D.cpp
+    src/graphics/Font.cpp
+    src/graphics/internal/GlyphAtlas.cpp
+    src/graphics/internal/TextRenderer.cpp
     src/graphics/internal/BatchBuilder2D.cpp
 
     # --------------------------------------------------------

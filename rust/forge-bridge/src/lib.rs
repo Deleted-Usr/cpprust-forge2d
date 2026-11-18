@@ -12,3 +12,4 @@
 //! | Functions that let C++ call that sub-system | A module inside `forge-bridge`           |
 mod assets;
 mod audio;
+mod fonts;

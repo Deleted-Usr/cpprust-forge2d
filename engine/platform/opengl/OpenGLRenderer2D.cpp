@@ -11,7 +11,7 @@
 #include <opengl/textures/GPUTexture.hpp>
 
 #ifdef FORGE2D_EMBED_BATCH_SHADERS
-#include <BatchShaders.hpp>
+    #include <BatchShaders.hpp>
 #endif
 
 namespace forge::internal::opengl
@@ -20,7 +20,7 @@ namespace forge::internal::opengl
     :
     #ifdef FORGE2D_EMBED_BATCH_SHADERS
           shader_ (
-              Shader::Source{embedded::BatchVertex, "batch.vert.glsl (embedded)"},
+              Shader::Source{embedded::BatchVertex,   "batch.vert.glsl (embedded)"},
               Shader::Source{embedded::BatchFragment, "batch.frag.glsl (embedded)"}
           ),
     #else
@@ -32,8 +32,9 @@ namespace forge::internal::opengl
     whiteTexture_ (std::make_shared<const GPUTexture>(Image{ 1, 1, { 255, 255, 255, 255 } }, TextureOptions{}))
     {
         #ifdef FORGE2D_EMBED_BATCH_SHADERS
-                (void)shaderDirectory;
+            (void)shaderDirectory;
         #endif
+
         static_assert(std::is_standard_layout_v<Vertex2D>);
 
         vertexArray_.addVertexBuffer(vertexBuffer_, sizeof(Vertex2D), {
@@ -111,5 +112,20 @@ namespace forge::internal::opengl
     void OpenGLRenderer2D::endFrame()
     {
         // Application presents. No glFlush/glFinish is necessary.
+    }
+
+    std::shared_ptr<const GPUTexture> OpenGLRenderer2D::createGlyphPage(int size) const
+    {
+        return std::make_shared<const GPUTexture>(size, size);
+    }
+
+    void OpenGLRenderer2D::uploadGlyph(
+        const GPUTexture& page,
+        int x,     int y,
+        int width, int height,
+        std::span<const std::uint8_t> pixels
+    ) const
+    {
+        page.uploadCoverage(x, y, width, height, pixels);
     }
 }

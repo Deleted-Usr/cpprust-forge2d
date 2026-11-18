@@ -39,6 +39,7 @@ corrosion_add_cxxbridge(
     FILES
         assets.rs
         audio.rs
+        fonts.rs
 )
 
 # Give engine code one stable CMake target to link against.

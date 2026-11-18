@@ -2,6 +2,8 @@
 
 #include <filesystem>
 #include <memory>
+#include <span>
+#include <cstdint>
 
 #include <opengl/array/VertexArray.hpp>
 #include <opengl/shaders/Shader.hpp>
@@ -30,6 +32,14 @@ namespace forge::internal::opengl
             void endFrame   ();
 
             [[nodiscard]] std::shared_ptr<const GPUTexture> whiteTexture() const { return whiteTexture_; }
+            [[nodiscard]] std::shared_ptr<const GPUTexture> createGlyphPage(int size) const;
+
+            void uploadGlyph(
+                const GPUTexture& page,
+                int x,     int y,
+                int width, int height,
+                std::span<const std::uint8_t> pixels
+            ) const;
 
         private:
             Shader shader_;
